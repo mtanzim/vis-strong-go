@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/mtanzim/vis-strong-go/csvread"
@@ -9,9 +10,12 @@ import (
 
 func main() {
 	dbPath := "./test3.db"
+	inputPath := "strong-input.csv"
 	os.Remove(dbPath)
-	rows := csvread.GetDataFromCSV("strong-input.csv")
-	userDB := managedb.NewUserDB(dbPath)
-	defer userDB.CloseDB()
+	rows := csvread.GetDataFromCSV(inputPath)
+	userDB, closeDB := managedb.NewUserDB(dbPath)
+	defer closeDB()
 	userDB.Persist(rows)
+	result := userDB.Read()
+	fmt.Println(result)
 }

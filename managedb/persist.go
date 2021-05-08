@@ -11,16 +11,12 @@ type UserDB struct {
 	DB *sql.DB
 }
 
-func NewUserDB(dbName string) *UserDB {
+func NewUserDB(dbName string) (*UserDB, func() error) {
 	db, err := sql.Open("sqlite3", dbName)
 	if err != nil {
 		log.Fatal(err)
 	}
-	return &UserDB{db}
-}
-
-func (userDB UserDB) CloseDB() {
-	userDB.DB.Close()
+	return &UserDB{db}, db.Close
 }
 
 func (userDB UserDB) Persist(rows []csvread.Row) {
