@@ -6,7 +6,6 @@ import (
 	"log"
 	"os"
 	"strconv"
-	"strings"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -68,7 +67,8 @@ func GetDataFromCSV(filename string) []Row {
 		if err != nil {
 			weight = 0.0
 		}
-		date := strings.Split(line[0], " ")[0]
+		// date := strings.Split(line[0], " ")[0]
+		date := line[0]
 		row := Row{
 			Date:         date,
 			WorkoutName:  line[1],

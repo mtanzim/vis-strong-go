@@ -31,7 +31,7 @@ func ExerciseController(w http.ResponseWriter, req *http.Request) {
 	}
 
 	// TODO: remove this hardcoded value
-	dbPath := "test3.db"
+	dbPath := ":memory:"
 	inputPath := "strong-input.csv"
 	os.Remove(dbPath)
 	rows := csvread.GetDataFromCSV(inputPath)
