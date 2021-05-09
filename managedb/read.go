@@ -20,8 +20,10 @@ type QueryResult struct {
 
 func (userDB UserDB) Read() []QueryResult {
 	db := userDB.DB
+	// TODO: these will be query args
 	minDate := "2021-03-01"
 	maxDate := "2021-04-30"
+	excName := "Bench Dip"
 	sqlStmt := `
 		SELECT 
 		id, 
@@ -37,12 +39,13 @@ func (userDB UserDB) Read() []QueryResult {
 		from strong
 		WHERE date > ?
 		AND date < ?
+		AND exerciseName = ?
+		AND reps > 0
 		GROUP BY date, exerciseName
 		ORDER BY exerciseName
 		LIMIT 500;
-	
 	`
-	rows, err := db.Query(sqlStmt, minDate, maxDate)
+	rows, err := db.Query(sqlStmt, minDate, maxDate, excName)
 	if err != nil {
 		log.Fatal(err)
 	}

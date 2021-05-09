@@ -25,10 +25,13 @@ SELECT date, workoutName, exerciseName, MIN(weight) as minWeight,
 MAX(weight) as maxWeight, 
 SUM(reps) as totalReps, 
 GROUP_CONCAT(weight || weightUnit || " x " || reps, ", ") as eachRep, 
-SUM(weight*reps) as totalWeight, weightUnit 
+SUM(weight*reps) as totalWeight, 
+weightUnit 
 from strong
 WHERE date > "2021-03-01"
 AND date < "2021-04-30"
+AND reps > 0
+AND exerciseName = "Bench Dip"
 GROUP BY date, exerciseName
 ORDER BY exerciseName
 LIMIT 500;
