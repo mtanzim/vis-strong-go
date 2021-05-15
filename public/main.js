@@ -9,8 +9,20 @@ async function fetchData() {
 
 async function main() {
   console.log("Hello world");
-  const data = await fetchData();
-  console.log(data);
+  try {
+    const data = await fetchData();
+    console.log(data);
+    const exerciseNames = Object.keys(data);
+    const exercisesDiv = document.getElementById("exerciseNames");
+    exercisesDiv.innerHTML = `
+    <ul style="list-style-type: none">
+      ${exerciseNames.map((e) => `<li>${e}</l1>`).join("")}
+    </ul>
+    
+    `;
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 window.strongMain = main;

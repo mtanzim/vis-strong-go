@@ -17,6 +17,8 @@ type ExerciseName struct {
 	ExerciseName string `json:"exerciseName"`
 }
 
+const lbsPerKg = 2.20462
+
 func (userDB UserDB) ReadExerciseNames() ([]ExerciseName, error) {
 	db := userDB.DB
 	sqlStmt := `
@@ -64,7 +66,6 @@ func (userDB UserDB) ReadExerciseStats(excName string) ([]ExerciseStats, error) 
 		from strong
 		-- WHERE date > ?
 		-- AND date < ?
-		-- AND reps > 0
 		WHERE reps > 0
 		AND exerciseName LIKE ?
 		GROUP BY date, exerciseName
@@ -95,6 +96,13 @@ func (userDB UserDB) ReadExerciseStats(excName string) ([]ExerciseStats, error) 
 		)
 		if err != nil {
 			return nil, err
+		}
+		// convert lbs to kg
+		if resRow.WeightUnit == "lbs" {
+			resRow.MaxWeight = resRow.MaxWeight / lbsPerKg
+			resRow.MinWeight = resRow.MaxWeight / lbsPerKg
+			resRow.TotalWeight = resRow.MaxWeight / lbsPerKg
+			resRow.WeightUnit = "kg"
 		}
 		resRows = append(resRows, resRow)
 	}
