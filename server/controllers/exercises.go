@@ -3,7 +3,9 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
+	"log"
 	"net/http"
+	"sync"
 
 	"github.com/mtanzim/vis-strong-go/managedb"
 )
@@ -39,15 +41,20 @@ func ExerciseController(w http.ResponseWriter, req *http.Request) {
 	// userDB.Persist(rows)
 	exerciseNames, err := userDB.ReadExerciseNames()
 	m := make(map[string][]managedb.ExerciseStats)
+	var wg sync.WaitGroup
 	for _, exercise := range exerciseNames {
-		exerciseStats, err := userDB.ReadExerciseStats(exercise.ExerciseName)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			HandlerError(w, err, errors.New("something went wrong"))
-			return
-		}
-		m[exercise.ExerciseName] = exerciseStats
+		wg.Add(1)
+		go func(excName string, wg *sync.WaitGroup) {
+			defer wg.Done()
+			exerciseStats, err := userDB.ReadExerciseStats(excName)
+			if err != nil {
+				log.Println(err)
+				return
+			}
+			m[excName] = exerciseStats
+		}(exercise.ExerciseName, &wg)
 	}
+	wg.Wait()
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		HandlerError(w, err, err)

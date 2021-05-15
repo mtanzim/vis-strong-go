@@ -12,7 +12,8 @@ type UserDB struct {
 }
 
 func NewUserDB(dbName string) (*UserDB, func() error) {
-	db, err := sql.Open("sqlite3", dbName)
+	db, err := sql.Open("sqlite3", dbName+"?cache=shared")
+	db.SetMaxOpenConns(1)
 	if err != nil {
 		log.Fatal(err)
 	}
