@@ -4,9 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
-	"os"
 
-	"github.com/mtanzim/vis-strong-go/csvread"
 	"github.com/mtanzim/vis-strong-go/managedb"
 )
 
@@ -19,26 +17,37 @@ func ExerciseController(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	minDate := req.URL.Query().Get("start")
-	maxDate := req.URL.Query().Get("end")
-	exercise := req.URL.Query().Get("exercise")
+	// minDate := req.URL.Query().Get("start")
+	// maxDate := req.URL.Query().Get("end")
+	// exercise := req.URL.Query().Get("exercise")
 
-	err := ValidateQueryDate(minDate, maxDate)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		HandlerError(w, err, err)
-		return
-	}
+	// err := ValidateQueryDate(minDate, maxDate)
+	// if err != nil {
+	// 	w.WriteHeader(http.StatusBadRequest)
+	// 	HandlerError(w, err, err)
+	// 	return
+	// }
 
 	// TODO: remove this hardcoded value
-	dbPath := ":memory:"
-	inputPath := "strong-input.csv"
-	os.Remove(dbPath)
-	rows := csvread.GetDataFromCSV(inputPath)
+	// dbPath := ":memory:"
+	dbPath := "test2.db"
+	// inputPath := "strong-input.csv"
+	// os.Remove(dbPath)
+	// rows := csvread.GetDataFromCSV(inputPath)
 	userDB, closeDB := managedb.NewUserDB(dbPath)
 	defer closeDB()
-	userDB.Persist(rows)
-	result, err := userDB.ReadExercises(minDate, maxDate, exercise)
+	// userDB.Persist(rows)
+	exerciseNames, err := userDB.ReadExerciseNames()
+	m := make(map[string][]managedb.ExerciseStats)
+	for _, exercise := range exerciseNames {
+		exerciseStats, err := userDB.ReadExerciseStats(exercise.ExerciseName)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			HandlerError(w, err, errors.New("something went wrong"))
+			return
+		}
+		m[exercise.ExerciseName] = exerciseStats
+	}
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		HandlerError(w, err, err)
@@ -46,7 +55,7 @@ func ExerciseController(w http.ResponseWriter, req *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	if err := json.NewEncoder(w).Encode(result); err != nil {
+	if err := json.NewEncoder(w).Encode(m); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		HandlerError(w, err, errors.New("something went wrong"))
 		return

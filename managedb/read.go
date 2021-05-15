@@ -13,8 +13,41 @@ type ExerciseStats struct {
 	EachRep      string  `json:"eachRep"`
 	WeightUnit   string  `json:"weightUnit"`
 }
+type ExerciseName struct {
+	ExerciseName string `json:"exerciseName"`
+}
 
-func (userDB UserDB) ReadExercises(minDate, maxDate, excName string) ([]ExerciseStats, error) {
+func (userDB UserDB) ReadExerciseNames() ([]ExerciseName, error) {
+	db := userDB.DB
+	sqlStmt := `
+	select DISTINCT exerciseName from strong;
+	`
+	rows, err := db.Query(sqlStmt)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	resRows := []ExerciseName{}
+	for rows.Next() {
+		resRow := ExerciseName{}
+		err := rows.Scan(
+			&resRow.ExerciseName,
+		)
+		if err != nil {
+			return nil, err
+		}
+		resRows = append(resRows, resRow)
+
+	}
+	err = rows.Err()
+	if err != nil {
+		return nil, err
+	}
+	return resRows, nil
+
+}
+
+func (userDB UserDB) ReadExerciseStats(excName string) ([]ExerciseStats, error) {
 	db := userDB.DB
 	sqlStmt := `
 		SELECT 
@@ -29,16 +62,17 @@ func (userDB UserDB) ReadExercises(minDate, maxDate, excName string) ([]Exercise
 		SUM(weight*reps) as totalWeight, 
 		weightUnit 
 		from strong
-		WHERE date > ?
-		AND date < ?
-		-- AND exerciseName LIKE ?
-		AND reps > 0
+		-- WHERE date > ?
+		-- AND date < ?
+		-- AND reps > 0
+		WHERE reps > 0
+		AND exerciseName LIKE ?
 		GROUP BY date, exerciseName
 		ORDER BY exerciseName
-		LIMIT 500;
+		LIMIT 5000;
 	`
 	// rows, err := db.Query(sqlStmt, minDate, maxDate, "%"+excName+"%")
-	rows, err := db.Query(sqlStmt, minDate, maxDate)
+	rows, err := db.Query(sqlStmt, "%"+excName+"%")
 
 	if err != nil {
 		return nil, err
