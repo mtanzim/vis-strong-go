@@ -8,6 +8,7 @@ type ExerciseStats struct {
 	SetOrder     int64   `json:"setOrder"`
 	MinWeight    float64 `json:"minWeight"`
 	MaxWeight    float64 `json:"maxWeight"`
+	NumSets      float64 `json:"numSets"`
 	TotalWeight  float64 `json:"totalWeight"`
 	TotalReps    int64   `json:"totalReps"`
 	EachRep      string  `json:"eachRep"`
@@ -17,7 +18,7 @@ type ExerciseName struct {
 	ExerciseName string `json:"exerciseName"`
 }
 
-const lbsPerKg = 2.20462
+// const lbsPerKg = 2.20462
 
 func (userDB UserDB) ReadExerciseNames() ([]ExerciseName, error) {
 	db := userDB.DB
@@ -58,7 +59,8 @@ func (userDB UserDB) ReadExerciseStats(excName string) ([]ExerciseStats, error) 
 		workoutName,
 		exerciseName,
 		MIN(weight) as minWeight, 
-		MAX(weight) as maxWeight, 
+		MAX(weight) as maxWeight,
+		COUNT(weight) as numSets,
 		SUM(reps) as totalReps, 
 		GROUP_CONCAT(weight || weightUnit || " x " || reps, ", ") as eachRep, 
 		SUM(weight*reps) as totalWeight, 
@@ -89,6 +91,7 @@ func (userDB UserDB) ReadExerciseStats(excName string) ([]ExerciseStats, error) 
 			&resRow.ExerciseName,
 			&resRow.MinWeight,
 			&resRow.MaxWeight,
+			&resRow.NumSets,
 			&resRow.TotalReps,
 			&resRow.EachRep,
 			&resRow.TotalWeight,
@@ -98,12 +101,12 @@ func (userDB UserDB) ReadExerciseStats(excName string) ([]ExerciseStats, error) 
 			return nil, err
 		}
 		// convert lbs to kg
-		if resRow.WeightUnit == "lbs" {
-			resRow.MaxWeight = resRow.MaxWeight / lbsPerKg
-			resRow.MinWeight = resRow.MaxWeight / lbsPerKg
-			resRow.TotalWeight = resRow.MaxWeight / lbsPerKg
-			resRow.WeightUnit = "kg"
-		}
+		// if resRow.WeightUnit == "lbs" {
+		// 	resRow.MaxWeight = resRow.MaxWeight / lbsPerKg
+		// 	resRow.MinWeight = resRow.MaxWeight / lbsPerKg
+		// 	resRow.TotalWeight = resRow.MaxWeight / lbsPerKg
+		// 	resRow.WeightUnit = "kg"
+		// }
 		resRows = append(resRows, resRow)
 	}
 	err = rows.Err()
