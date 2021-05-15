@@ -1,6 +1,6 @@
 package managedb
 
-type QueryResult struct {
+type ExerciseStats struct {
 	ID           int64   `json:"id"`
 	Date         string  `json:"date"`
 	WorkoutName  string  `json:"workoutName"`
@@ -14,7 +14,7 @@ type QueryResult struct {
 	WeightUnit   string  `json:"weightUnit"`
 }
 
-func (userDB UserDB) Read(minDate, maxDate, excName string) ([]QueryResult, error) {
+func (userDB UserDB) ReadExercises(minDate, maxDate, excName string) ([]ExerciseStats, error) {
 	db := userDB.DB
 	sqlStmt := `
 		SELECT 
@@ -31,20 +31,22 @@ func (userDB UserDB) Read(minDate, maxDate, excName string) ([]QueryResult, erro
 		from strong
 		WHERE date > ?
 		AND date < ?
-		AND exerciseName LIKE ?
+		-- AND exerciseName LIKE ?
 		AND reps > 0
 		GROUP BY date, exerciseName
 		ORDER BY exerciseName
 		LIMIT 500;
 	`
-	rows, err := db.Query(sqlStmt, minDate, maxDate, "%"+excName+"%")
+	// rows, err := db.Query(sqlStmt, minDate, maxDate, "%"+excName+"%")
+	rows, err := db.Query(sqlStmt, minDate, maxDate)
+
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	resRows := []QueryResult{}
+	resRows := []ExerciseStats{}
 	for rows.Next() {
-		resRow := QueryResult{}
+		resRow := ExerciseStats{}
 		err = rows.Scan(
 			&resRow.ID,
 			&resRow.Date,

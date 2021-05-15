@@ -38,7 +38,7 @@ func ExerciseController(w http.ResponseWriter, req *http.Request) {
 	userDB, closeDB := managedb.NewUserDB(dbPath)
 	defer closeDB()
 	userDB.Persist(rows)
-	result, err := userDB.Read(minDate, maxDate, exercise)
+	result, err := userDB.ReadExercises(minDate, maxDate, exercise)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		HandlerError(w, err, err)
