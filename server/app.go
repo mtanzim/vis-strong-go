@@ -16,6 +16,7 @@ func Start() {
 	http.Handle("/", http.FileServer(http.Dir("./public")))
 	http.HandleFunc(ApiURL+"/health", controllers.HealthController)
 	http.HandleFunc(ApiURL+"/data", controllers.ExerciseController)
+	http.HandleFunc(ApiURL+"/upload", controllers.UploadController)
 
 	port := os.Getenv("PORT")
 	if port == "" {

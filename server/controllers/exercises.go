@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"bufio"
+	"encoding/csv"
 	"encoding/json"
 	"errors"
 	"log"
@@ -9,6 +11,42 @@ import (
 
 	"github.com/mtanzim/vis-strong-go/managedb"
 )
+
+const MAX_UPLOAD_SIZE = 1024 * 1024 // 1MB
+
+func UploadController(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		w.WriteHeader(http.StatusNotFound)
+		HandlerError(w, errors.New("not found"), errors.New("not found"))
+		return
+	}
+	if err := r.ParseMultipartForm(MAX_UPLOAD_SIZE); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		HandlerError(w, err, errors.New("upload size too big"))
+		return
+	}
+	file, handler, err := r.FormFile("myFile")
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		HandlerError(w, err, errors.New("failed to upload file"))
+		return
+	}
+	defer file.Close()
+	log.Printf("Uploaded File: %+v\n", handler.Filename)
+	log.Printf("File Size: %+v\n", handler.Size)
+	log.Printf("MIME Header: %+v\n", handler.Header)
+	reader := csv.NewReader(bufio.NewReader(file))
+	reader.Comma = ';'
+	reader.LazyQuotes = true
+
+	lines, err := reader.ReadAll()
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		HandlerError(w, err, errors.New("failed to read file"))
+		return
+	}
+	log.Println(lines)
+}
 
 func ExerciseController(w http.ResponseWriter, req *http.Request) {
 
