@@ -3,17 +3,14 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <script src="deps/plotly.min.js"></script>
-    <script type="module" src="main.js"></script>
+    <script defer src="deps/plotly.min.js"></script>
+    <script defer type="module" src="main.js"></script>
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <title>Strong Dashboard</title>
   </head>
   <body onload="strongMain();">
     <div class="content">
       <h1 id="title">Strong Dashboard</h1>
-      <div id="loader-div">
-        <img alt="strong" src="favicon.ico" class="loader" />
-      </div>
       <div class="bookmarks" id="bookmarks"></div>
       <div class="plots" id="exercisePlots"></div>
       <a href="#title" id="backToTop" class="back-to-top" title="Go to top">
@@ -63,7 +60,8 @@
   .plot-item {
     border: 1px solid #dfdfdf;
     padding: 16px;
-    transition: all 0.4s ease 0s;
+    min-height: 800px;
+    /* transition: all 0.4s ease 0s; */
   }
   .control-btn {
     margin-right: 8px;
@@ -75,10 +73,11 @@
     cursor: pointer;
   }
   .loader {
-    margin-top: 10vh;
+    /* margin-top: 10vh; */
     animation: rotating 4s linear infinite;
-    width: 20vw;
+    width: 20%;
     height: auto;
+    margin: auto;
   }
   @keyframes rotating {
     from {

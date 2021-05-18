@@ -71,7 +71,7 @@ func (userDB UserDB) ReadExerciseStats(excName string) ([]ExerciseStats, error) 
 		WHERE reps > 0
 		AND exerciseName LIKE ?
 		GROUP BY date, exerciseName
-		ORDER BY exerciseName
+		ORDER BY exerciseName DESC
 		LIMIT 5000;
 	`
 	// rows, err := db.Query(sqlStmt, minDate, maxDate, "%"+excName+"%")

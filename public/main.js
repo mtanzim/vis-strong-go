@@ -32,7 +32,7 @@ const btnLabels = {
   maxWeight: "Max Weight",
 };
 
-export function plotExercise(divName, { name, exerciseStat, yKey }) {
+function plotExercise(divName, { name, exerciseStat, yKey }) {
   const data = [
     {
       x: exerciseStat.map((d) => d.date),
@@ -58,54 +58,52 @@ export function plotExercise(divName, { name, exerciseStat, yKey }) {
   Plotly.newPlot(divName, data, layout, config);
 }
 
-async function main() {
-  try {
-    const data = await fetchData();
-    console.log(data);
-    const exerciseNames = Object.keys(data).slice(0, 50);
-    // create bookmarks
-    const bookmarksDiv = document.getElementById("bookmarks");
-    bookmarksDiv.innerHTML = exerciseNames
-      .map((e) => `<a href="#${e}">${e}<a/>`)
-      .join("");
+async function preparePlots(data, k) {
+  const v = data[k];
+  const curDiv = document.getElementById(k);
 
-    const exercisesDiv = document.getElementById("exercisePlots");
-    // create divs
-    exercisesDiv.innerHTML = exerciseNames
-      .map(
-        (e) =>
-          `
-        <div class="plot-item " id="${e}">
-        </div>
-      `
-      )
-      .join("");
-    // plot into divs
-    exerciseNames.forEach((k) => {
-      const v = data[k];
-      const curDiv = document.getElementById(k);
-
-      // create buttons to toggle chart types
-      yKeys.forEach((yKey) => {
-        const button = document.createElement("button");
-        button.onclick = () =>
-          plotExercise(k, {
-            name: k,
-            exerciseStat: v,
-            yKey,
-          });
-        button.textContent = btnLabels[yKey];
-        button.className = "control-btn";
-        curDiv.appendChild(button);
+  // create buttons to toggle chart types
+  yKeys.forEach((yKey) => {
+    const button = document.createElement("button");
+    button.onclick = () =>
+      plotExercise(k, {
+        name: k,
+        exerciseStat: v,
+        yKey,
       });
+    button.textContent = btnLabels[yKey];
+    button.className = "control-btn";
+    curDiv.appendChild(button);
+  });
 
-      plotExercise(k, { name: k, exerciseStat: v, yKey: yKeys[0] });
-    });
-    const loader = document.getElementById("loader-div");
-    loader.style.display = "none";
-  } catch (err) {
-    console.log(err);
-  }
+  plotExercise(k, { name: k, exerciseStat: v, yKey: yKeys[0] });
+}
+
+async function main() {
+  const data = await fetchData();
+  const exerciseNames = Object.keys(data);
+  // create bookmarks
+  const bookmarksDiv = document.getElementById("bookmarks");
+  exerciseNames.forEach((exc) => {
+    const aComp = document.createElement("a");
+    aComp.href = `#${exc}`;
+    aComp.text = exc;
+    bookmarksDiv.appendChild(aComp);
+  });
+
+  const exercisesDiv = document.getElementById("exercisePlots");
+  // create divs
+  exerciseNames.forEach((exc, idx) => {
+    const plotDiv = document.createElement("div");
+    plotDiv.className = "plot-item";
+    plotDiv.id = exc;
+    plotDiv.textContent = "Loading...";
+    exercisesDiv.appendChild(plotDiv);
+    setTimeout(() => {
+      plotDiv.textContent = "";
+      preparePlots(data, exc);
+    }, idx * 2);
+  });
 }
 
 window.strongMain = main;
