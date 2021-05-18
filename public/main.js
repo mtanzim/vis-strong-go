@@ -1,8 +1,22 @@
+const LS_KEY = "StrongData";
 async function fetchData() {
+  const cache = window.localStorage.getItem(LS_KEY);
+  if (cache) {
+    try {
+      const rv = JSON.parse(cache);
+      return rv;
+    } catch (err) {
+      console.warn(err);
+      window.localStorage.removeItem(LS_KEY);
+    }
+  }
+
   const res = await fetch("/api/v1/data");
 
   if (res.status === 200) {
-    return res.json();
+    const rv = await res.json();
+    window.localStorage.setItem(LS_KEY, JSON.stringify(rv));
+    return rv;
   }
   throw new Error("Failed to get data");
 }
@@ -91,8 +105,8 @@ async function main() {
     bookmarksDiv.appendChild(aComp);
   });
 
+  // create divs for plots, and queue up plotly renders
   const exercisesDiv = document.getElementById("exercisePlots");
-  // create divs
   exerciseNames.forEach((exc, idx) => {
     const plotDiv = document.createElement("div");
     plotDiv.className = "plot-item";
@@ -102,7 +116,7 @@ async function main() {
     setTimeout(() => {
       plotDiv.textContent = "";
       preparePlots(data, exc);
-    }, idx * 2);
+    }, idx);
   });
 }
 

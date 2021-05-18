@@ -11,6 +11,16 @@
   <body onload="strongMain();">
     <div class="content">
       <h1 id="title">Strong Dashboard</h1>
+      <form
+        class="upload-form"
+        action="#"
+        method="post"
+        enctype="multipart/form-data"
+      >
+        Select CSV file to upload
+        <input type="file" accept=".csv" />
+        <input type="submit" value="Upload File" name="fileToUpload" />
+      </form>
       <div class="bookmarks" id="bookmarks"></div>
       <div class="plots" id="exercisePlots"></div>
       <a href="#title" id="backToTop" class="back-to-top" title="Go to top">
@@ -28,6 +38,14 @@
       Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
     margin: 24px;
     margin-top: 36px;
+  }
+  .upload-form {
+    margin: auto;
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    /* display: flex; */
+    /* flex-direction: column; */
   }
   .bookmarks {
     display: flex;
