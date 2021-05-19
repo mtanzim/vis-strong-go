@@ -94,6 +94,9 @@ async function preparePlots(data, k) {
 }
 
 async function main() {
+  const form = document.getElementById("csv-form");
+  form.addEventListener("submit", submitCsv);
+
   const data = await fetchData();
   const exerciseNames = Object.keys(data);
   // create bookmarks
@@ -118,6 +121,26 @@ async function main() {
       preparePlots(data, exc);
     }, idx);
   });
+}
+
+async function uploadFile(file) {
+  const formData = new FormData();
+  formData.append("myFile", file, file?.name || "strong.csv");
+  const res = await fetch("/api/v1/upload", {
+    method: "POST",
+    body: formData,
+  });
+  const json = await res.json();
+  console.log(json);
+}
+
+function submitCsv(event) {
+  console.log(event);
+  event.preventDefault();
+  const input = document.getElementById("uploaded-csv");
+  const file = input?.files?.[0];
+  console.log(file);
+  uploadFile(file);
 }
 
 window.strongMain = main;

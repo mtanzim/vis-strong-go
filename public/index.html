@@ -12,14 +12,9 @@
   <body onload="strongMain();">
     <div class="content">
       <h1 id="title">Strong Dashboard</h1>
-      <form
-        class="upload-form"
-        action="/api/v1/upload"
-        method="post"
-        enctype="multipart/form-data"
-      >
+      <form id="csv-form" class="upload-form" enctype="multipart/form-data">
         Select CSV file to upload
-        <input type="file" accept=".csv" name="myFile" />
+        <input id="uploaded-csv" type="file" accept=".csv" name="myFile" />
         <input type="submit" value="Upload File" />
       </form>
       <div class="bookmarks" id="bookmarks"></div>
