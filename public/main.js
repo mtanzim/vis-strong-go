@@ -139,6 +139,9 @@ function submitCsv(event) {
   event.preventDefault();
   const input = document.getElementById("uploaded-csv");
   const file = input?.files?.[0];
+  if (!file) {
+    return;
+  }
   console.log(file);
   uploadFile(file);
 }

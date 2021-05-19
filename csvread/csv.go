@@ -1,10 +1,6 @@
 package csvread
 
 import (
-	"bufio"
-	"encoding/csv"
-	"log"
-	"os"
 	"strconv"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -21,34 +17,34 @@ type Row struct {
 	Reps         int64
 }
 
-func readCsv(filename string) ([][]string, error) {
+// func readCsv(filename string) ([][]string, error) {
 
-	// Open CSV file
-	f, err := os.Open(filename)
-	if err != nil {
-		return [][]string{}, err
-	}
-	defer f.Close()
+// 	// Open CSV file
+// 	f, err := os.Open(filename)
+// 	if err != nil {
+// 		return [][]string{}, err
+// 	}
+// 	defer f.Close()
 
-	// Read File into a Variable
-	reader := csv.NewReader(bufio.NewReader(f))
-	reader.Comma = ';'
-	reader.LazyQuotes = true
+// 	// Read File into a Variable
+// 	reader := csv.NewReader(bufio.NewReader(f))
+// 	reader.Comma = ';'
+// 	reader.LazyQuotes = true
 
-	lines, err := reader.ReadAll()
-	if err != nil {
-		log.Println(err)
-		return [][]string{}, err
-	}
+// 	lines, err := reader.ReadAll()
+// 	if err != nil {
+// 		log.Println(err)
+// 		return [][]string{}, err
+// 	}
 
-	return lines, nil
-}
+// 	return lines, nil
+// }
 
-func GetDataFromCSV(filename string) []Row {
-	lines, err := readCsv(filename)
-	if err != nil {
-		panic(err)
-	}
+func GetDataFromCSV(lines [][]string) []Row {
+	// lines, err := readCsv(filename)
+	// if err != nil {
+	// panic(err)
+	// }
 	var rows []Row
 	for i, line := range lines {
 		// skip the header

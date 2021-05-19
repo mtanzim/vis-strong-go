@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"sync"
 
+	"github.com/mtanzim/vis-strong-go/csvread"
 	"github.com/mtanzim/vis-strong-go/managedb"
 )
 
@@ -46,6 +47,40 @@ func UploadController(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	log.Println(lines)
+
+	data := csvread.GetDataFromCSV(lines)
+	userDB, close := managedb.NewUserDB(":memory:")
+	defer close()
+	userDB.Persist(data)
+	exerciseNames, err := userDB.ReadExerciseNames()
+	m := make(map[string][]managedb.ExerciseStats)
+	var wg sync.WaitGroup
+	for _, exercise := range exerciseNames {
+		wg.Add(1)
+		go func(excName string, wg *sync.WaitGroup) {
+			defer wg.Done()
+			exerciseStats, err := userDB.ReadExerciseStats(excName)
+			if err != nil {
+				log.Println(err)
+				return
+			}
+			m[excName] = exerciseStats
+		}(exercise.ExerciseName, &wg)
+	}
+	wg.Wait()
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		HandlerError(w, err, err)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	if err := json.NewEncoder(w).Encode(m); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		HandlerError(w, err, errors.New("something went wrong"))
+		return
+	}
+
 }
 
 func ExerciseController(w http.ResponseWriter, req *http.Request) {
