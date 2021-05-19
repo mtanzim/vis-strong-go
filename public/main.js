@@ -1,25 +1,25 @@
 const LS_KEY = "StrongData";
-async function fetchData() {
-  const cache = window.localStorage.getItem(LS_KEY);
-  if (cache) {
-    try {
-      const rv = JSON.parse(cache);
-      return rv;
-    } catch (err) {
-      console.warn(err);
-      window.localStorage.removeItem(LS_KEY);
-    }
-  }
+// async function fetchData() {
+//   const cache = window.localStorage.getItem(LS_KEY);
+//   if (cache) {
+//     try {
+//       const rv = JSON.parse(cache);
+//       return rv;
+//     } catch (err) {
+//       console.warn(err);
+//       window.localStorage.removeItem(LS_KEY);
+//     }
+//   }
 
-  const res = await fetch("/api/v1/data");
+//   const res = await fetch("/api/v1/data");
 
-  if (res.status === 200) {
-    const rv = await res.json();
-    window.localStorage.setItem(LS_KEY, JSON.stringify(rv));
-    return rv;
-  }
-  throw new Error("Failed to get data");
-}
+//   if (res.status === 200) {
+//     const rv = await res.json();
+//     window.localStorage.setItem(LS_KEY, JSON.stringify(rv));
+//     return rv;
+//   }
+//   throw new Error("Failed to get data");
+// }
 
 const WIDTH = 800;
 const HEIGHT = WIDTH;
@@ -96,8 +96,8 @@ async function preparePlots(data, k) {
 async function main() {
   const form = document.getElementById("csv-form");
   form.addEventListener("submit", submitCsv);
-
-  const data = await fetchData();
+}
+function parseResponse(data) {
   const exerciseNames = Object.keys(data);
   // create bookmarks
   const bookmarksDiv = document.getElementById("bookmarks");
@@ -132,6 +132,7 @@ async function uploadFile(file) {
   });
   const json = await res.json();
   console.log(json);
+  parseResponse(json);
 }
 
 function submitCsv(event) {
