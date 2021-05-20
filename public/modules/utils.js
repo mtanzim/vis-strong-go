@@ -86,6 +86,7 @@ export async function submitCsv(event) {
   } catch (err) {
     console.log(err);
     showError(err?.message || "Something went wrong");
+  } finally {
     stopLoading();
   }
 }
