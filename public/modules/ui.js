@@ -38,3 +38,13 @@ export function removeForm(cacheRemover, submitHandler) {
     setupForm(submitHandler);
   });
 }
+
+export function createBookmarks(exerciseNames) {
+  const bookmarksDiv = document.getElementById("bookmarks");
+  exerciseNames.forEach((exc) => {
+    const aComp = document.createElement("a");
+    aComp.href = `#${exc}`;
+    aComp.text = exc;
+    bookmarksDiv.appendChild(aComp);
+  });
+}

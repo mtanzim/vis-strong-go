@@ -1,5 +1,15 @@
-import { triggerLoading, stopLoading, setupForm } from "./modules/ui.js";
-import { parseResponse, getCache, submitCsv } from "./modules/utils.js";
+import {
+  triggerLoading,
+  stopLoading,
+  setupForm,
+  removeForm,
+} from "./modules/ui.js";
+import {
+  parseResponse,
+  getCache,
+  submitCsv,
+  removeCache,
+} from "./modules/utils.js";
 
 async function main() {
   triggerLoading();
@@ -7,7 +17,7 @@ async function main() {
   if (cache) {
     try {
       const json = JSON.parse(cache);
-      removeForm();
+      removeForm(removeCache, submitCsv);
       await parseResponse(json);
       stopLoading();
       return;

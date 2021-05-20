@@ -1,4 +1,9 @@
-import { triggerLoading, stopLoading, removeForm } from "./ui.js";
+import {
+  triggerLoading,
+  stopLoading,
+  removeForm,
+  createBookmarks,
+} from "./ui.js";
 import { preparePlots } from "./plot.js";
 
 const LS_KEY = "StrongData";
@@ -12,19 +17,13 @@ export function removeCache() {
 }
 
 export function getCache() {
-  window.localStorage.getItem(LS_KEY);
+  return window.localStorage.getItem(LS_KEY);
 }
 
 export async function parseResponse(data) {
   const exerciseNames = Object.keys(data);
   // create bookmarks
-  const bookmarksDiv = document.getElementById("bookmarks");
-  exerciseNames.forEach((exc) => {
-    const aComp = document.createElement("a");
-    aComp.href = `#${exc}`;
-    aComp.text = exc;
-    bookmarksDiv.appendChild(aComp);
-  });
+  createBookmarks(exerciseNames);
 
   // create divs for plots, and queue up plotly renders
   const exercisesDiv = document.getElementById("exercisePlots");
