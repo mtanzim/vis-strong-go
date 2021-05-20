@@ -12,10 +12,10 @@ import {
 } from "./modules/utils.js";
 
 async function main() {
-  triggerLoading();
   const cache = getCache();
   if (cache) {
     try {
+      triggerLoading();
       const json = JSON.parse(cache);
       removeForm(removeCache, submitCsv);
       await parseResponse(json);

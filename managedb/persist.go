@@ -20,7 +20,7 @@ func NewUserDB(dbName string) (*UserDB, func() error) {
 	return &UserDB{db}, db.Close
 }
 
-func (userDB UserDB) Persist(rows []csvread.Row) {
+func (userDB UserDB) Persist(rows []csvread.Row) error {
 	db := userDB.DB
 
 	sqlStmt := `
@@ -38,11 +38,11 @@ func (userDB UserDB) Persist(rows []csvread.Row) {
 	_, err := db.Exec(sqlStmt)
 	if err != nil {
 		log.Printf("%q: %s\n", err, sqlStmt)
-		return
+		return err
 	}
 	tx, err := db.Begin()
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	stmt, err := tx.Prepare(`
 	INSERT INTO strong (id,
@@ -57,7 +57,8 @@ func (userDB UserDB) Persist(rows []csvread.Row) {
 	VALUES (?,?,?,?,?,?,?,?)
 	`)
 	if err != nil {
-		log.Fatal(err)
+		return err
+
 	}
 	defer stmt.Close()
 	for i, row := range rows {
@@ -65,8 +66,9 @@ func (userDB UserDB) Persist(rows []csvread.Row) {
 		log.Println(row)
 		_, err = stmt.Exec(i, row.Date, row.WorkoutName, row.ExerciseName, row.SetOrder, row.Weight, row.WeightUnit, row.Reps)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 	}
 	tx.Commit()
+	return nil
 }

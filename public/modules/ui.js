@@ -1,3 +1,13 @@
+export function showError(msg) {
+  const errorDiv = document.getElementById("error");
+  errorDiv.innerText = msg;
+}
+
+export function resetError() {
+  const errorDiv = document.getElementById("error");
+  errorDiv.innerText = "";
+}
+
 export function triggerLoading() {
   const loader = document.getElementById("loader");
   loader.innerText = "Loading...";

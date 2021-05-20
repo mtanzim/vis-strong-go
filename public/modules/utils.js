@@ -3,6 +3,8 @@ import {
   stopLoading,
   removeForm,
   createBookmarks,
+  showError,
+  resetError,
 } from "./ui.js";
 import { preparePlots } from "./plot.js";
 
@@ -45,8 +47,11 @@ export async function parseResponse(data) {
   );
 }
 
+function isFalsyObject(obj) {
+  return obj && Object.keys(obj).length === 0 && obj.constructor === Object;
+}
+
 export async function uploadFile(file) {
-  triggerLoading();
   const formData = new FormData();
   formData.append("myFile", file, file?.name || "strong.csv");
   const res = await fetch("/api/v1/upload", {
@@ -55,22 +60,32 @@ export async function uploadFile(file) {
   });
   if (res.status === 200) {
     const json = await res.json();
+    if (isFalsyObject(json)) {
+      throw new Error("No data returned. Please check your file.");
+    }
     removeForm(removeCache, submitCsv);
     cacheData(json);
     await parseResponse(json);
-    stopLoading();
     return;
   }
   throw new Error("Failed to get data");
 }
 
-export function submitCsv(event) {
-  console.log(event);
+export async function submitCsv(event) {
   event.preventDefault();
+  resetError();
+
   const input = document.getElementById("uploaded-csv");
   const file = input?.files?.[0];
   if (!file) {
     return;
   }
-  uploadFile(file);
+  try {
+    triggerLoading();
+    await uploadFile(file);
+  } catch (err) {
+    console.log(err);
+    showError(err?.message || "Something went wrong");
+    stopLoading();
+  }
 }

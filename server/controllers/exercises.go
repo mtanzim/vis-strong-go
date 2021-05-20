@@ -16,7 +16,10 @@ const MAX_UPLOAD_SIZE = 1024 * 1024 // 1MB
 func persist(data []csvread.Row) (map[string][]managedb.ExerciseStats, error) {
 	userDB, close := managedb.NewUserDB(":memory:")
 	defer close()
-	userDB.Persist(data)
+	err := userDB.Persist(data)
+	if err != nil {
+		return nil, err
+	}
 	exerciseNames, err := userDB.ReadExerciseNames()
 	m := make(map[string][]managedb.ExerciseStats)
 	var wg sync.WaitGroup
@@ -68,6 +71,7 @@ func UploadController(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	log.Println(data)
 	m, err := persist(data)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
