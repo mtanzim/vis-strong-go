@@ -66,15 +66,12 @@ func (userDB UserDB) ReadExerciseStats(excName string) ([]ExerciseStats, error) 
 		SUM(weight*reps) as totalWeight, 
 		weightUnit 
 		from strong
-		-- WHERE date > ?
-		-- AND date < ?
 		WHERE reps > 0
 		AND exerciseName LIKE ?
 		GROUP BY date, exerciseName
 		ORDER BY exerciseName DESC
 		LIMIT 5000;
 	`
-	// rows, err := db.Query(sqlStmt, minDate, maxDate, "%"+excName+"%")
 	rows, err := db.Query(sqlStmt, "%"+excName+"%")
 
 	if err != nil {
@@ -100,13 +97,6 @@ func (userDB UserDB) ReadExerciseStats(excName string) ([]ExerciseStats, error) 
 		if err != nil {
 			return nil, err
 		}
-		// convert lbs to kg
-		// if resRow.WeightUnit == "lbs" {
-		// 	resRow.MaxWeight = resRow.MaxWeight / lbsPerKg
-		// 	resRow.MinWeight = resRow.MaxWeight / lbsPerKg
-		// 	resRow.TotalWeight = resRow.MaxWeight / lbsPerKg
-		// 	resRow.WeightUnit = "kg"
-		// }
 		resRows = append(resRows, resRow)
 	}
 	err = rows.Err()

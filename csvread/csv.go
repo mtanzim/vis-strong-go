@@ -3,8 +3,7 @@ package csvread
 import (
 	"bufio"
 	"encoding/csv"
-	"log"
-	"os"
+	"mime/multipart"
 	"strconv"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -21,33 +20,14 @@ type Row struct {
 	Reps         int64
 }
 
-func readCsv(filename string) ([][]string, error) {
-
-	// Open CSV file
-	f, err := os.Open(filename)
-	if err != nil {
-		return [][]string{}, err
-	}
-	defer f.Close()
-
-	// Read File into a Variable
-	reader := csv.NewReader(bufio.NewReader(f))
+func GetDataFromCSV(file multipart.File) ([]Row, error) {
+	reader := csv.NewReader(bufio.NewReader(file))
 	reader.Comma = ';'
 	reader.LazyQuotes = true
 
 	lines, err := reader.ReadAll()
 	if err != nil {
-		log.Println(err)
-		return [][]string{}, err
-	}
-
-	return lines, nil
-}
-
-func GetDataFromCSV(filename string) []Row {
-	lines, err := readCsv(filename)
-	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	var rows []Row
 	for i, line := range lines {
@@ -67,7 +47,6 @@ func GetDataFromCSV(filename string) []Row {
 		if err != nil {
 			weight = 0.0
 		}
-		// date := strings.Split(line[0], " ")[0]
 		date := line[0]
 		row := Row{
 			Date:         date,
@@ -80,5 +59,5 @@ func GetDataFromCSV(filename string) []Row {
 		}
 		rows = append(rows, row)
 	}
-	return rows
+	return rows, nil
 }
