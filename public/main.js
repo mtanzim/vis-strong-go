@@ -1,25 +1,4 @@
 const LS_KEY = "StrongData";
-// async function fetchData() {
-//   const cache = window.localStorage.getItem(LS_KEY);
-//   if (cache) {
-//     try {
-//       const rv = JSON.parse(cache);
-//       return rv;
-//     } catch (err) {
-//       console.warn(err);
-//       window.localStorage.removeItem(LS_KEY);
-//     }
-//   }
-
-//   const res = await fetch("/api/v1/data");
-
-//   if (res.status === 200) {
-//     const rv = await res.json();
-//     window.localStorage.setItem(LS_KEY, JSON.stringify(rv));
-//     return rv;
-//   }
-//   throw new Error("Failed to get data");
-// }
 
 const WIDTH = 800;
 const HEIGHT = WIDTH;
@@ -93,11 +72,7 @@ async function preparePlots(data, k) {
   plotExercise(k, { name: k, exerciseStat: v, yKey: yKeys[0] });
 }
 
-async function main() {
-  const form = document.getElementById("csv-form");
-  form.addEventListener("submit", submitCsv);
-}
-function parseResponse(data) {
+async function parseResponse(data) {
   const exerciseNames = Object.keys(data);
   // create bookmarks
   const bookmarksDiv = document.getElementById("bookmarks");
@@ -110,29 +85,43 @@ function parseResponse(data) {
 
   // create divs for plots, and queue up plotly renders
   const exercisesDiv = document.getElementById("exercisePlots");
-  exerciseNames.forEach((exc, idx) => {
-    const plotDiv = document.createElement("div");
-    plotDiv.className = "plot-item";
-    plotDiv.id = exc;
-    plotDiv.textContent = "Loading...";
-    exercisesDiv.appendChild(plotDiv);
-    setTimeout(() => {
-      plotDiv.textContent = "";
-      preparePlots(data, exc);
-    }, idx);
-  });
+  return Promise.all(
+    exerciseNames.map((exc, idx) => {
+      const plotDiv = document.createElement("div");
+      plotDiv.className = "plot-item";
+      plotDiv.id = exc;
+      plotDiv.textContent = "Loading...";
+      exercisesDiv.appendChild(plotDiv);
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          plotDiv.textContent = "";
+          preparePlots(data, exc);
+          return resolve();
+        }, idx);
+      });
+    })
+  );
 }
 
 async function uploadFile(file) {
+  const loader = document.getElementById("loader");
+  loader.innerText = "Loading...";
+
   const formData = new FormData();
   formData.append("myFile", file, file?.name || "strong.csv");
   const res = await fetch("/api/v1/upload", {
     method: "POST",
     body: formData,
   });
-  const json = await res.json();
-  console.log(json);
-  parseResponse(json);
+  if (res.status === 200) {
+    const json = await res.json();
+    removeForm();
+    cacheData(json);
+    await parseResponse(json);
+    loader.innerText = "";
+    return;
+  }
+  throw new Error("Failed to get data");
 }
 
 function submitCsv(event) {
@@ -143,8 +132,58 @@ function submitCsv(event) {
   if (!file) {
     return;
   }
-  console.log(file);
   uploadFile(file);
+}
+
+function setupForm() {
+  const form = document.getElementById("csv-form");
+  form.addEventListener("submit", submitCsv);
+  form.style.display = "block";
+
+  const reupload = document.getElementById("re-upload");
+  reupload.style.display = "none";
+}
+
+function removeForm() {
+  const form = document.getElementById("csv-form");
+  form.style.display = "none";
+
+  const reupload = document.getElementById("re-upload");
+  reupload.style.display = "block";
+
+  reupload.addEventListener("click", () => {
+    removeCache();
+    document.getElementById("bookmarks").innerHTML = "";
+    document.getElementById("exercisePlots").innerHTML = "";
+    setupForm();
+  });
+}
+
+function cacheData(data) {
+  window.localStorage.setItem(LS_KEY, JSON.stringify(data));
+}
+
+function removeCache() {
+  window.localStorage.removeItem(LS_KEY);
+}
+
+async function main() {
+  const cache = window.localStorage.getItem(LS_KEY);
+  if (cache) {
+    try {
+      const loader = document.getElementById("loader");
+      loader.innerText = "Loading...";
+      const json = JSON.parse(cache);
+      removeForm();
+      await parseResponse(json);
+      loader.innerText = "";
+      return;
+    } catch (err) {
+      console.warn(err);
+      setupForm();
+    }
+  }
+  setupForm();
 }
 
 window.strongMain = main;
