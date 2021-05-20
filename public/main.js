@@ -34,8 +34,7 @@ async function parseResponse(data) {
 }
 
 async function uploadFile(file) {
-  const loader = document.getElementById("loader");
-  loader.innerText = "Loading...";
+  triggerLoading();
 
   const formData = new FormData();
   formData.append("myFile", file, file?.name || "strong.csv");
@@ -48,7 +47,7 @@ async function uploadFile(file) {
     removeForm();
     cacheData(json);
     await parseResponse(json);
-    loader.innerText = "";
+    stopLoading();
     return;
   }
   throw new Error("Failed to get data");
@@ -97,23 +96,40 @@ function removeCache() {
   window.localStorage.removeItem(LS_KEY);
 }
 
+function triggerLoading() {
+  const loader = document.getElementById("loader");
+  loader.innerText = "Loading...";
+  const elems = document.getElementsByClassName("upload-form");
+  console.log(elems);
+  for (const elem of elems) {
+    elem.style.visibility = "hidden";
+  }
+}
+function stopLoading() {
+  const loader = document.getElementById("loader");
+  loader.innerText = "";
+  const elems = document.getElementsByClassName("upload-form");
+  for (const elem of elems) {
+    elem.style.visibility = "visible";
+  }
+}
+
 async function main() {
+  triggerLoading();
   const cache = window.localStorage.getItem(LS_KEY);
   if (cache) {
     try {
-      const loader = document.getElementById("loader");
-      loader.innerText = "Loading...";
       const json = JSON.parse(cache);
       removeForm();
       await parseResponse(json);
-      loader.innerText = "";
+      stopLoading();
       return;
     } catch (err) {
       console.warn(err);
-      setupForm();
     }
   }
   setupForm();
+  stopLoading();
 }
 
 window.strongMain = main;
