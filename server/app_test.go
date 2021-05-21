@@ -116,6 +116,7 @@ func TestUploadInvalid(t *testing.T) {
 	}{
 		{"fixtures/bad.csv", http.StatusBadRequest, "{\"error\":\"failed to read file\"}\n"},
 		{"fixtures/results.csv", http.StatusOK, "{}\n"},
+		{"fixtures/bad.txt", http.StatusOK, "{}\n"},
 	}
 
 	for _, tt := range tests {
