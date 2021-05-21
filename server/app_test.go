@@ -70,7 +70,7 @@ func TestUpload(t *testing.T) {
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(controllers.UploadController)
 
-	filename := "example.csv"
+	filename := "fixtures/example.csv"
 	filetype := "myFile"
 	route := "/upload"
 
@@ -114,8 +114,8 @@ func TestUploadInvalid(t *testing.T) {
 		expectedStatus uint
 		expectedBody   string
 	}{
-		{"bad.csv", http.StatusBadRequest, "{\"error\":\"failed to read file\"}\n"},
-		{"results.csv", http.StatusOK, "{}\n"},
+		{"fixtures/bad.csv", http.StatusBadRequest, "{\"error\":\"failed to read file\"}\n"},
+		{"fixtures/results.csv", http.StatusOK, "{}\n"},
 	}
 
 	for _, tt := range tests {
