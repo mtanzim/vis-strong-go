@@ -34,18 +34,15 @@ func TestHealth(t *testing.T) {
 			rr.Body.String(), expected)
 	}
 }
-func TestUpload(t *testing.T) {
 
-	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(controllers.UploadController)
+func reqWithFile(filename, filetype, route string) (*http.Request, error) {
 
-	filename := "example.csv"
-	filetype := "myFile"
 	file, err := os.Open(filename)
 
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
+
 	defer file.Close()
 
 	body := &bytes.Buffer{}
@@ -59,15 +56,28 @@ func TestUpload(t *testing.T) {
 	io.Copy(part, file)
 	writer.Close()
 
+	req, err := http.NewRequest(http.MethodPost, route, body)
 	if err != nil {
-		log.Fatal(err)
-	}
-
-	req, err := http.NewRequest(http.MethodPost, "/upload", body)
-	if err != nil {
-		t.Fatal(err)
+		return nil, err
 	}
 	req.Header.Add("Content-Type", writer.FormDataContentType())
+	return req, nil
+
+}
+
+func TestUpload(t *testing.T) {
+
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(controllers.UploadController)
+
+	filename := "example.csv"
+	filetype := "myFile"
+	route := "/upload"
+
+	req, err := reqWithFile(filename, filetype, route)
+	if err != nil {
+		t.Fatal("failed to process file")
+	}
 
 	handler.ServeHTTP(rr, req)
 	if status := rr.Code; status != http.StatusOK {
@@ -91,3 +101,40 @@ func TestUpload(t *testing.T) {
 	}
 
 }
+
+// func TestUploadInvalid(t *testing.T) {
+
+// 	rr := httptest.NewRecorder()
+// 	handler := http.HandlerFunc(controllers.UploadController)
+
+// 	filetype := "myFile"
+// 	route := "/upload"
+
+// 	filename := "example.csv"
+// 	req, err := reqWithFile(filename, filetype, route)
+// 	if err != nil {
+// 		t.Fatal("failed to process file")
+// 	}
+
+// 	handler.ServeHTTP(rr, req)
+// 	if status := rr.Code; status != http.StatusOK {
+// 		t.Errorf("handler returned wrong status code: got %v want %v",
+// 			status, http.StatusOK)
+// 	}
+
+// 	resString := rr.Body.String()
+// 	expectedSubStrList := []string{"Seated Leg Curl (Machine)", "Leg Press", "Deadlift (Barbell)", "Plank", "Chest and Triceps"}
+
+// 	for _, expectedSubStr := range expectedSubStrList {
+// 		testname := fmt.Sprintf("%s,%s", "testing", expectedSubStr)
+// 		t.Run(testname, func(t *testing.T) {
+// 			containsExpected := strings.Contains(resString, expectedSubStr)
+// 			if !containsExpected {
+// 				t.Errorf("handler returned unexpected body: got %v wanted to have substring %v",
+// 					rr.Body.String(), expectedSubStr)
+// 			}
+// 		})
+
+// 	}
+
+// }
