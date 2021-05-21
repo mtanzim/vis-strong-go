@@ -102,39 +102,43 @@ func TestUpload(t *testing.T) {
 
 }
 
-// func TestUploadInvalid(t *testing.T) {
+func TestUploadInvalid(t *testing.T) {
 
-// 	rr := httptest.NewRecorder()
-// 	handler := http.HandlerFunc(controllers.UploadController)
+	handler := http.HandlerFunc(controllers.UploadController)
 
-// 	filetype := "myFile"
-// 	route := "/upload"
+	filetype := "myFile"
+	route := "/upload"
 
-// 	filename := "example.csv"
-// 	req, err := reqWithFile(filename, filetype, route)
-// 	if err != nil {
-// 		t.Fatal("failed to process file")
-// 	}
+	tests := []struct {
+		filename       string
+		expectedStatus uint
+		expectedBody   string
+	}{
+		{"bad.csv", http.StatusBadRequest, "{\"error\":\"failed to read file\"}\n"},
+		{"results.csv", http.StatusOK, "{}\n"},
+	}
 
-// 	handler.ServeHTTP(rr, req)
-// 	if status := rr.Code; status != http.StatusOK {
-// 		t.Errorf("handler returned wrong status code: got %v want %v",
-// 			status, http.StatusOK)
-// 	}
+	for _, tt := range tests {
 
-// 	resString := rr.Body.String()
-// 	expectedSubStrList := []string{"Seated Leg Curl (Machine)", "Leg Press", "Deadlift (Barbell)", "Plank", "Chest and Triceps"}
+		testname := fmt.Sprintf("%s,%d,%s", tt.filename, tt.expectedStatus, tt.expectedBody)
+		t.Run(testname, func(t *testing.T) {
+			rr := httptest.NewRecorder()
+			req, err := reqWithFile(tt.filename, filetype, route)
+			if err != nil {
+				t.Fatal("failed to process file")
+			}
 
-// 	for _, expectedSubStr := range expectedSubStrList {
-// 		testname := fmt.Sprintf("%s,%s", "testing", expectedSubStr)
-// 		t.Run(testname, func(t *testing.T) {
-// 			containsExpected := strings.Contains(resString, expectedSubStr)
-// 			if !containsExpected {
-// 				t.Errorf("handler returned unexpected body: got %v wanted to have substring %v",
-// 					rr.Body.String(), expectedSubStr)
-// 			}
-// 		})
+			handler.ServeHTTP(rr, req)
+			if status := rr.Code; status != int(tt.expectedStatus) {
+				t.Errorf("handler returned wrong status code: got %v want %v",
+					status, tt.expectedStatus)
+			}
+			resString := rr.Body.String()
+			if resString != tt.expectedBody {
+				t.Errorf("handler returned unexpected body: got %v wanted to have %v",
+					resString, tt.expectedBody)
+			}
+		})
+	}
 
-// 	}
-
-// }
+}
