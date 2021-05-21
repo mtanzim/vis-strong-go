@@ -13,7 +13,7 @@ import (
 
 const MAX_UPLOAD_SIZE = 1024 * 1024 // 1MB
 
-func persist(data []csvread.Row) (map[string][]managedb.ExerciseStats, error) {
+func process(data []csvread.Row) (map[string][]managedb.ExerciseStats, error) {
 	userDB, close := managedb.NewUserDB(":memory:")
 	defer close()
 	err := userDB.Persist(data)
@@ -72,7 +72,7 @@ func UploadController(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Println(data)
-	m, err := persist(data)
+	m, err := process(data)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		HandlerError(w, err, errors.New("failed to process file"))
