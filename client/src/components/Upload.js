@@ -63,7 +63,7 @@ export function Upload() {
   }
 
   return (
-    <form onSubmit={submit} class="upload-form" enctype="multipart/form-data">
+    <form onSubmit={submit} enctype="multipart/form-data">
       Select CSV file to upload
       <input type="file" accept=".csv" name="myFile" ref={fileInputRef} />
       <input type="submit" value="Upload File" />
