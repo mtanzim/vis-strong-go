@@ -8,9 +8,11 @@ export default function App() {
         Strong Dashboard
       </h1>
       <Upload />
-      <a href="#title" id="backToTop" class="back-to-top" title="Go to top">
-        Top
-      </a>
+      <div className="bookmarks">
+        <a href="#title" id="backToTop" class="back-to-top" title="Go to top">
+          Top
+        </a>
+      </div>
     </div>
   );
 }
