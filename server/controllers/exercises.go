@@ -5,7 +5,6 @@ import (
 	"errors"
 	"log"
 	"net/http"
-	"sync"
 
 	"github.com/mtanzim/vis-strong-go/csvread"
 	"github.com/mtanzim/vis-strong-go/managedb"
@@ -22,20 +21,18 @@ func process(data []csvread.Row) (map[string][]managedb.ExerciseStats, error) {
 	}
 	exerciseNames, err := userDB.ReadExerciseNames()
 	m := make(map[string][]managedb.ExerciseStats)
-	var wg sync.WaitGroup
+
+	// TOOD: concurrency here causes intermittent crashes; investigate
 	for _, exercise := range exerciseNames {
-		wg.Add(1)
-		go func(excName string, wg *sync.WaitGroup) {
-			defer wg.Done()
+		func(excName string) {
 			exerciseStats, err := userDB.ReadExerciseStats(excName)
 			if err != nil {
 				log.Println(err)
 				return
 			}
 			m[excName] = exerciseStats
-		}(exercise.ExerciseName, &wg)
+		}(exercise.ExerciseName)
 	}
-	wg.Wait()
 	return m, err
 }
 
@@ -71,7 +68,6 @@ func UploadController(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println(data)
 	m, err := process(data)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
