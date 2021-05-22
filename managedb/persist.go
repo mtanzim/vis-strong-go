@@ -62,8 +62,6 @@ func (userDB UserDB) Persist(rows []csvread.Row) error {
 	}
 	defer stmt.Close()
 	for i, row := range rows {
-		log.Println("Inserting row: ", i)
-		log.Println(row)
 		_, err = stmt.Exec(i, row.Date, row.WorkoutName, row.ExerciseName, row.SetOrder, row.Weight, row.WeightUnit, row.Reps)
 		if err != nil {
 			return err

@@ -123,6 +123,7 @@ func TestUploadInvalid(t *testing.T) {
 
 		testname := fmt.Sprintf("%s,%d,%s", tt.filename, tt.expectedStatus, tt.expectedBody)
 		t.Run(testname, func(t *testing.T) {
+			t.Parallel()
 			rr := httptest.NewRecorder()
 			req, err := reqWithFile(tt.filename, filetype, route)
 			if err != nil {
@@ -144,6 +145,11 @@ func TestUploadInvalid(t *testing.T) {
 
 }
 
+type failRecord struct {
+	statusErr string
+	bodyErr   string
+}
+
 func TestUploadLoadTest(t *testing.T) {
 
 	handler := http.HandlerFunc(controllers.UploadController)
@@ -151,27 +157,45 @@ func TestUploadLoadTest(t *testing.T) {
 	filename := "fixtures/example.csv"
 	filetype := "myFile"
 	route := "/upload"
+	req, err := reqWithFile(filename, filetype, route)
 
-	numIterations := 5000
+	numIterations := 500 * 10
+	fails := make(map[int]failRecord)
 
 	for n := 0; n <= numIterations; n++ {
 		testname := fmt.Sprintf("%s,%d", "Loadtest", n)
 		t.Run(testname, func(t *testing.T) {
 			t.Parallel()
 			rr := httptest.NewRecorder()
-			req, err := reqWithFile(filename, filetype, route)
 			if err != nil {
 				t.Fatal("failed to process file")
 			}
 
 			handler.ServeHTTP(rr, req)
 			expectedStatus := http.StatusOK
+
+			fail := &failRecord{}
 			if status := rr.Code; status != int(expectedStatus) {
-				t.Errorf("handler returned wrong status code: got %v want %v",
+				fail.statusErr = fmt.Sprintf("handler returned wrong status code: got %v want %v",
 					status, expectedStatus)
+			}
+			expectedSubStr := "Deadlift (Barbell)"
+			resString := rr.Body.String()
+			containsExpected := strings.Contains(resString, expectedSubStr)
+			if !containsExpected {
+				fail.bodyErr = fmt.Sprintf("handler returned unexpected body: got %v wanted to have substring %v",
+					rr.Body.String(), expectedSubStr)
 			}
 
 		})
+	}
+
+	t.Log(fails)
+	acceptableFailRatio := 0.005
+	actualFailRatio := float64(len(fails)) / float64(numIterations)
+	if actualFailRatio > acceptableFailRatio {
+		t.Errorf("Fail percentatage over acceptable ratio, got %f wanted to have %f",
+			actualFailRatio, acceptableFailRatio)
 	}
 
 }
