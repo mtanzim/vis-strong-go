@@ -74,3 +74,4 @@ Temporary Items
 .vscode
 vis-strong-go
 __debug_bin
+.env
