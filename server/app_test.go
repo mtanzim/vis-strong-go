@@ -143,3 +143,35 @@ func TestUploadInvalid(t *testing.T) {
 	}
 
 }
+
+func TestUploadLoadTest(t *testing.T) {
+
+	handler := http.HandlerFunc(controllers.UploadController)
+
+	filename := "fixtures/example.csv"
+	filetype := "myFile"
+	route := "/upload"
+
+	numIterations := 5000
+
+	for n := 0; n <= numIterations; n++ {
+		testname := fmt.Sprintf("%s,%d", "Loadtest", n)
+		t.Run(testname, func(t *testing.T) {
+			t.Parallel()
+			rr := httptest.NewRecorder()
+			req, err := reqWithFile(filename, filetype, route)
+			if err != nil {
+				t.Fatal("failed to process file")
+			}
+
+			handler.ServeHTTP(rr, req)
+			expectedStatus := http.StatusOK
+			if status := rr.Code; status != int(expectedStatus) {
+				t.Errorf("handler returned wrong status code: got %v want %v",
+					status, expectedStatus)
+			}
+
+		})
+	}
+
+}
