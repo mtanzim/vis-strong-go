@@ -47,7 +47,9 @@ export function Upload() {
   if (failureMsg) {
     return (
       <>
-        <button onClick={resetData}>Upload a new file</button>
+        <button className="control-btn" onClick={resetData}>
+          Upload a new file
+        </button>
         <p>{failureMsg}</p>
       </>
     );
@@ -55,18 +57,37 @@ export function Upload() {
 
   if (responseData) {
     return (
-      <>
-        <button onClick={resetData}>Upload a new file</button>
+      <div>
+        <button className="control-btn" onClick={resetData}>
+          Upload a new file
+        </button>
         <Plot data={responseData} />
-      </>
+      </div>
     );
   }
 
   return (
-    <form onSubmit={submit} enctype="multipart/form-data">
-      Select CSV file to upload
-      <input type="file" accept=".csv" name="myFile" ref={fileInputRef} />
-      <input type="submit" value="Upload File" />
+    <form
+      className="upload-form"
+      onSubmit={submit}
+      enctype="multipart/form-data"
+    >
+      <label>
+        <p>Select a CSV file to upload</p>
+        <input
+          className="control-btn"
+          type="file"
+          accept=".csv"
+          name="myFile"
+          ref={fileInputRef}
+        />
+        <input
+          className="control-btn"
+          style={{ marginLeft: 8 }}
+          type="submit"
+          value="Upload File"
+        />
+      </label>
     </form>
   );
 }
