@@ -7,9 +7,7 @@ export function Plot({ data }) {
       <Bookmarks names={exerciseNames} />
       <div className="plots">
         {exerciseNames.map((name) => (
-          <div key={name} className="plot-item">
-            <EachPlot name={name} exerciseStat={data[name]} />
-          </div>
+          <EachPlot key={name} name={name} exerciseStat={data[name]} />
         ))}
       </div>
     </div>

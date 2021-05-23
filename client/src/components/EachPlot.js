@@ -1,4 +1,5 @@
 import { useEffect, useState } from "preact/hooks";
+import { Loader } from "./Loader";
 
 const keysNeedingConversion = new Set([
   "totalWeight",
@@ -78,23 +79,26 @@ export function EachPlot({ name, exerciseStat }) {
       cb: () => setLoading(false),
     });
   }, [exerciseStat, name, curKey]);
+
+  const handleSelectChange = (event) => {
+    setLoading(true);
+    setKey(event.target.value);
+  };
+
   return (
-    <>
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        yKeys.map((k) => (
-          <button
-            className="control-btn"
-            disabled={curKey === k}
-            key={k}
-            onClick={() => setKey(k)}
-          >
-            {btnLabels[k]}
-          </button>
-        ))
-      )}
+    <div className="plot-item">
       <div key={name} id={name} />
-    </>
+      {loading ? (
+        <Loader />
+      ) : (
+        <select value={curKey} onChange={handleSelectChange}>
+          {yKeys.map((k) => (
+            <option value={k} key={k}>
+              {btnLabels[k]}
+            </option>
+          ))}
+        </select>
+      )}
+    </div>
   );
 }

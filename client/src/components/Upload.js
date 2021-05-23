@@ -2,6 +2,7 @@ import { uploadFile, removeCache, getCache } from "../api/upload";
 import { useState, useEffect } from "preact/hooks";
 import { createRef } from "preact";
 import { Plot } from "./Plot";
+import { Loader } from "./Loader";
 export function Upload() {
   const [isLoading, setLoading] = useState(false);
   const [failureMsg, setFailureMsg] = useState(null);
@@ -41,7 +42,7 @@ export function Upload() {
   };
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <Loader />;
   }
 
   if (failureMsg) {

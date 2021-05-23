@@ -49,8 +49,9 @@
 .plot-item {
   border: 1px solid #dfdfdf;
   padding: 16px;
-  min-height: 800px;
+  min-height: 850px;
 }
+
 .back-to-top {
   position: fixed;
   bottom: 0;
@@ -79,9 +80,8 @@ button:disabled {
 }
 
 .loader {
-  /* margin-top: 10vh; */
-  animation: rotating 4s linear infinite;
-  width: 20%;
+  animation: fadeIn 1s infinite alternate;
+  width: 36px;
   height: auto;
   margin: auto;
 }
@@ -91,5 +91,11 @@ button:disabled {
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
   }
 }
