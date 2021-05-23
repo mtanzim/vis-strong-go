@@ -1,21 +1,22 @@
 package managedb
 
 type ExerciseStats struct {
-	ID            int64   `json:"id"`
-	Date          string  `json:"date"`
-	WorkoutName   string  `json:"workoutName"`
-	ExerciseName  string  `json:"exerciseName"`
-	SetOrder      int64   `json:"setOrder"`
-	MinWeight     float64 `json:"minWeight"`
-	MaxWeight     float64 `json:"maxWeight"`
-	NumSets       float64 `json:"numSets"`
-	TotalWeight   float64 `json:"totalWeight"`
-	TotalReps     int64   `json:"totalReps"`
-	EachRep       string  `json:"eachRep"`
-	WeightUnit    string  `json:"weightUnit"`
-	TotalDistance float64 `json:"totalDistance"`
-	DistanceUnit  string  `json:"distanceUnit"`
-	TotalSeconds  int64   `json:"totalSeconds"`
+	ID              int64   `json:"id"`
+	Date            string  `json:"date"`
+	WorkoutName     string  `json:"workoutName"`
+	ExerciseName    string  `json:"exerciseName"`
+	SetOrder        int64   `json:"setOrder"`
+	MinWeight       float64 `json:"minWeight"`
+	MaxWeight       float64 `json:"maxWeight"`
+	NumSets         float64 `json:"numSets"`
+	TotalWeight     float64 `json:"totalWeight"`
+	TotalReps       int64   `json:"totalReps"`
+	EachRep         string  `json:"eachRep"`
+	WeightUnit      string  `json:"weightUnit"`
+	TotalDistance   float64 `json:"totalDistance"`
+	DistanceUnit    string  `json:"distanceUnit"`
+	TotalSeconds    int64   `json:"totalSeconds"`
+	EachRepDuration string  `json:"eachRepDuration"`
 }
 type ExerciseName struct {
 	ExerciseName string `json:"exerciseName"`
@@ -72,7 +73,8 @@ func (userDB UserDB) ReadExerciseStats(excName string) ([]ExerciseStats, error) 
 		weightUnit,
 		SUM(distance) as totalDistance,
 		distanceUnit,
-		SUM(seconds) as totalSeconds
+		SUM(seconds) as totalSeconds,
+		GROUP_CONCAT(seconds || "s", ", ") as eachRepDuration
 		from strong
 		WHERE exerciseName LIKE ?
 		GROUP BY date, exerciseName
@@ -103,6 +105,7 @@ func (userDB UserDB) ReadExerciseStats(excName string) ([]ExerciseStats, error) 
 			&resRow.TotalDistance,
 			&resRow.DistanceUnit,
 			&resRow.TotalSeconds,
+			&resRow.EachRepDuration,
 		)
 		if err != nil {
 			return nil, err

@@ -5,24 +5,35 @@ const keysNeedingConversion = new Set([
   "minWeight",
   "maxWeight",
 ]);
+
+const keysForDuration = new Set(["totalSeconds"]);
+
 const yLabels = {
   totalReps: "Total Reps",
   totalWeight: "Total Weight - kg",
   minWeight: "Min Weight - kg",
   maxWeight: "Max Weight - kg",
+  totalSeconds: "Total Duration - s",
 };
 const btnLabels = {
   totalReps: "Total Reps",
   totalWeight: "Total Weight",
   minWeight: "Min Weight",
   maxWeight: "Max Weight",
+  totalSeconds: "Total Duration",
 };
 const LBS_PER_KG = 2.20462;
 
 const WIDTH = 800;
 const HEIGHT = WIDTH;
 
-const yKeys = ["totalReps", "totalWeight", "minWeight", "maxWeight"];
+const yKeys = [
+  "totalReps",
+  "totalWeight",
+  "minWeight",
+  "maxWeight",
+  "totalSeconds",
+];
 function eachPlot({ divName, name, exerciseStat, yKey, cb }) {
   const data = [
     {
@@ -35,7 +46,9 @@ function eachPlot({ divName, name, exerciseStat, yKey, cb }) {
         return val.toFixed(2);
       }),
       type: "bar",
-      text: exerciseStat.map((d) => d.eachRep),
+      text: exerciseStat.map((d) =>
+        keysForDuration.has(yKey) ? d.eachRepDuration : d.eachRep
+      ),
     },
   ];
   const layout = {
