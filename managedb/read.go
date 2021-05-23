@@ -1,18 +1,22 @@
 package managedb
 
 type ExerciseStats struct {
-	ID           int64   `json:"id"`
-	Date         string  `json:"date"`
-	WorkoutName  string  `json:"workoutName"`
-	ExerciseName string  `json:"exerciseName"`
-	SetOrder     int64   `json:"setOrder"`
-	MinWeight    float64 `json:"minWeight"`
-	MaxWeight    float64 `json:"maxWeight"`
-	NumSets      float64 `json:"numSets"`
-	TotalWeight  float64 `json:"totalWeight"`
-	TotalReps    int64   `json:"totalReps"`
-	EachRep      string  `json:"eachRep"`
-	WeightUnit   string  `json:"weightUnit"`
+	ID              int64   `json:"id"`
+	Date            string  `json:"date"`
+	WorkoutName     string  `json:"workoutName"`
+	ExerciseName    string  `json:"exerciseName"`
+	SetOrder        int64   `json:"setOrder"`
+	MinWeight       float64 `json:"minWeight"`
+	MaxWeight       float64 `json:"maxWeight"`
+	NumSets         float64 `json:"numSets"`
+	TotalWeight     float64 `json:"totalWeight"`
+	TotalReps       int64   `json:"totalReps"`
+	EachRep         string  `json:"eachRep"`
+	WeightUnit      string  `json:"weightUnit"`
+	TotalDistance   float64 `json:"totalDistance"`
+	DistanceUnit    string  `json:"distanceUnit"`
+	TotalSeconds    int64   `json:"totalSeconds"`
+	EachRepDuration string  `json:"eachRepDuration"`
 }
 type ExerciseName struct {
 	ExerciseName string `json:"exerciseName"`
@@ -52,6 +56,8 @@ func (userDB UserDB) ReadExerciseNames() ([]ExerciseName, error) {
 
 func (userDB UserDB) ReadExerciseStats(excName string) ([]ExerciseStats, error) {
 	db := userDB.DB
+	// TODO: does not work if
+	// user switches measurement units within a date
 	sqlStmt := `
 		SELECT 
 		id, 
@@ -64,13 +70,16 @@ func (userDB UserDB) ReadExerciseStats(excName string) ([]ExerciseStats, error) 
 		SUM(reps) as totalReps, 
 		GROUP_CONCAT(weight || weightUnit || " x " || reps, ", ") as eachRep, 
 		SUM(weight*reps) as totalWeight, 
-		weightUnit 
+		weightUnit,
+		SUM(distance) as totalDistance,
+		distanceUnit,
+		SUM(seconds) as totalSeconds,
+		GROUP_CONCAT(seconds || "s", ", ") as eachRepDuration
 		from strong
-		WHERE reps > 0
-		AND exerciseName LIKE ?
+		WHERE exerciseName LIKE ?
 		GROUP BY date, exerciseName
 		ORDER BY exerciseName DESC
-		LIMIT 5000;
+		LIMIT 100000;
 	`
 	rows, err := db.Query(sqlStmt, "%"+excName+"%")
 
@@ -93,6 +102,10 @@ func (userDB UserDB) ReadExerciseStats(excName string) ([]ExerciseStats, error) 
 			&resRow.EachRep,
 			&resRow.TotalWeight,
 			&resRow.WeightUnit,
+			&resRow.TotalDistance,
+			&resRow.DistanceUnit,
+			&resRow.TotalSeconds,
+			&resRow.EachRepDuration,
 		)
 		if err != nil {
 			return nil, err

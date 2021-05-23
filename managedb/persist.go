@@ -32,7 +32,10 @@ func (userDB UserDB) Persist(rows []csvread.Row) error {
 		setOrder INT,
 		weight FLOAT,
 		weightUnit TEXT,
-		reps INT
+		reps INT,
+		distance FLOAT,
+		distanceUnit TEXT,
+		seconds INT
 	);
 	`
 	_, err := db.Exec(sqlStmt)
@@ -52,9 +55,12 @@ func (userDB UserDB) Persist(rows []csvread.Row) error {
 		setOrder,
 		weight,
 		weightUnit,
-		reps
+		reps,
+		distance,
+		distanceUnit,
+		seconds
 	)
-	VALUES (?,?,?,?,?,?,?,?)
+	VALUES (?,?,?,?,?,?,?,?,?,?,?)
 	`)
 	if err != nil {
 		return err
@@ -62,7 +68,7 @@ func (userDB UserDB) Persist(rows []csvread.Row) error {
 	}
 	defer stmt.Close()
 	for i, row := range rows {
-		_, err = stmt.Exec(i, row.Date, row.WorkoutName, row.ExerciseName, row.SetOrder, row.Weight, row.WeightUnit, row.Reps)
+		_, err = stmt.Exec(i, row.Date, row.WorkoutName, row.ExerciseName, row.SetOrder, row.Weight, row.WeightUnit, row.Reps, row.Distance, row.DistanceUnit, row.Seconds)
 		if err != nil {
 			return err
 		}
