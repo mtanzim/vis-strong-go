@@ -80,18 +80,21 @@ export function EachPlot({ name, exerciseStat }) {
   }, [exerciseStat, name, curKey]);
   return (
     <>
-      <p>{loading ? "Loading..." : null}</p>
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        yKeys.map((k) => (
+          <button
+            className="control-btn"
+            disabled={curKey === k}
+            key={k}
+            onClick={() => setKey(k)}
+          >
+            {btnLabels[k]}
+          </button>
+        ))
+      )}
       <div key={name} id={name} />
-      {yKeys.map((k) => (
-        <button
-          className="control-btn"
-          disabled={curKey === k}
-          key={k}
-          onClick={() => setKey(k)}
-        >
-          {btnLabels[k]}
-        </button>
-      ))}
     </>
   );
 }
