@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/mtanzim/vis-strong-go/csvread"
 	"github.com/mtanzim/vis-strong-go/managedb"
@@ -37,6 +38,7 @@ func process(data []csvread.Row) (map[string][]managedb.ExerciseStats, error) {
 }
 
 func UploadController(w http.ResponseWriter, r *http.Request) {
+
 	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusNotFound)
 		HandlerError(w, errors.New("not found"), errors.New("not found"))
@@ -44,6 +46,9 @@ func UploadController(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	if os.Getenv("DEVELOPMENT") == "1" {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+	}
 
 	if err := r.ParseMultipartForm(MAX_UPLOAD_SIZE); err != nil {
 		w.WriteHeader(http.StatusBadRequest)

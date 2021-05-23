@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 
+	_ "github.com/joho/godotenv/autoload"
 	"github.com/mtanzim/vis-strong-go/server/controllers"
 )
 

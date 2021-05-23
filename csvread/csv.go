@@ -18,6 +18,9 @@ type Row struct {
 	Weight       float64
 	WeightUnit   string
 	Reps         int64
+	Distance     float64
+	DistanceUnit string
+	Seconds      int64
 }
 
 func GetDataFromCSV(file multipart.File) ([]Row, error) {
@@ -39,13 +42,21 @@ func GetDataFromCSV(file multipart.File) ([]Row, error) {
 		if err != nil {
 			setOrder = 0
 		}
+		weight, err := strconv.ParseFloat(line[4], 64)
+		if err != nil {
+			weight = 0.0
+		}
 		reps, err := strconv.ParseInt(line[6], 10, 64)
 		if err != nil {
 			reps = 0
 		}
-		weight, err := strconv.ParseFloat(line[4], 64)
+		distance, err := strconv.ParseFloat(line[8], 64)
 		if err != nil {
-			weight = 0.0
+			distance = 0.0
+		}
+		seconds, err := strconv.ParseInt(line[10], 10, 64)
+		if err != nil {
+			distance = 0.0
 		}
 		date := line[0]
 		row := Row{
@@ -56,6 +67,9 @@ func GetDataFromCSV(file multipart.File) ([]Row, error) {
 			Weight:       weight,
 			WeightUnit:   line[5],
 			Reps:         reps,
+			Distance:     distance,
+			DistanceUnit: line[9],
+			Seconds:      seconds,
 		}
 		rows = append(rows, row)
 	}
