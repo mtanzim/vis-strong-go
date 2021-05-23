@@ -28,10 +28,7 @@ GROUP_CONCAT(weight || weightUnit || " x " || reps, ", ") as eachRep,
 SUM(weight*reps) as totalWeight, 
 weightUnit 
 from strong
-WHERE date > "2021-03-01"
-AND date < "2021-04-30"
-AND reps > 0
+WHERE reps > 0
 AND exerciseName LIKE "%Bench%"
 GROUP BY date, exerciseName
-ORDER BY exerciseName
-LIMIT 500;
+ORDER BY exerciseName;
