@@ -74,7 +74,10 @@ export function Upload() {
       enctype="multipart/form-data"
     >
       <label>
-        <p>Select a CSV file to upload</p>
+        <p>
+          Welcome to Strong Dashboard. Upload your csv file exported from the
+          Strong app to visualize your data and get a sense of your progress.
+        </p>
         <input
           className="control-btn"
           type="file"
