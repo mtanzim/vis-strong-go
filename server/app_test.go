@@ -86,7 +86,7 @@ func TestUpload(t *testing.T) {
 	}
 
 	resString := rr.Body.String()
-	expectedSubStrList := []string{"Seated Leg Curl (Machine)", "Leg Press", "Deadlift (Barbell)", "Plank", "Chest and Triceps"}
+	expectedSubStrList := []string{"Seated Leg Curl (Machine)", "Leg Press", "Deadlift (Barbell)", "Plank"}
 
 	for _, expectedSubStr := range expectedSubStrList {
 		testname := fmt.Sprintf("%s,%s", "testing", expectedSubStr)
@@ -154,16 +154,32 @@ func TestUploadLoadTest(t *testing.T) {
 
 	handler := http.HandlerFunc(controllers.UploadController)
 
-	filename := "fixtures/example.csv"
 	filetype := "myFile"
 	route := "/upload"
-	req, err := reqWithFile(filename, filetype, route)
+
+	alternatingTests := []struct {
+		filename       string
+		expectedSubStr string
+	}{
+		{
+			filename:       "fixtures/example.csv",
+			expectedSubStr: "Deadlift (Barbell)",
+		},
+		{
+			filename:       "fixtures/exampleB.csv",
+			expectedSubStr: "Triceps Extension",
+		},
+	}
 
 	numIterations := 500 * 10
 	fails := make(map[int]failRecord)
 
 	for n := 0; n <= numIterations; n++ {
 		testname := fmt.Sprintf("%s,%d", "Loadtest", n)
+
+		curTest := alternatingTests[n%2]
+
+		req, err := reqWithFile(curTest.filename, filetype, route)
 		t.Run(testname, func(t *testing.T) {
 			t.Parallel()
 			rr := httptest.NewRecorder()
@@ -179,7 +195,7 @@ func TestUploadLoadTest(t *testing.T) {
 				fail.statusErr = fmt.Sprintf("handler returned wrong status code: got %v want %v",
 					status, expectedStatus)
 			}
-			expectedSubStr := "Deadlift (Barbell)"
+			expectedSubStr := curTest.expectedSubStr
 			resString := rr.Body.String()
 			containsExpected := strings.Contains(resString, expectedSubStr)
 			if !containsExpected {
