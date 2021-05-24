@@ -4,7 +4,7 @@ import { createRef } from "preact";
 import { Plot } from "./Plot";
 import { Loader } from "./Loader";
 export function Upload() {
-  const [isLoading, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState(true);
   const [failureMsg, setFailureMsg] = useState(null);
   const [responseData, setResponseData] = useState(null);
 
@@ -15,6 +15,7 @@ export function Upload() {
     if (cached) {
       setResponseData(cached);
     }
+    setLoading(false);
   }, []);
 
   const resetData = () => {
@@ -51,6 +52,7 @@ export function Upload() {
         <button className="control-btn" onClick={resetData}>
           Upload a new file
         </button>
+        <div className="border-bottom" />
         <p>{failureMsg}</p>
       </>
     );
@@ -62,6 +64,7 @@ export function Upload() {
         <button className="control-btn" onClick={resetData}>
           Upload a new file
         </button>
+        <div className="border-bottom" />
         <Plot data={responseData} />
       </div>
     );
@@ -69,7 +72,7 @@ export function Upload() {
 
   return (
     <form
-      className="upload-form"
+      className="upload-form border-bottom"
       onSubmit={submit}
       enctype="multipart/form-data"
     >

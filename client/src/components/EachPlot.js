@@ -1,5 +1,5 @@
-import { useEffect, useState } from "preact/hooks";
-import { Loader } from "./Loader";
+import { useState } from "preact/hooks";
+import Plot from "react-plotly.js";
 
 const keysNeedingConversion = new Set([
   "totalWeight",
@@ -25,8 +25,8 @@ const btnLabels = {
 };
 const LBS_PER_KG = 2.20462;
 
-const WIDTH = 800;
-const HEIGHT = WIDTH;
+const WIDTH = 900;
+const HEIGHT = 700;
 
 const yKeys = [
   "totalReps",
@@ -35,70 +35,50 @@ const yKeys = [
   "maxWeight",
   "totalSeconds",
 ];
-function eachPlot({ divName, name, exerciseStat, yKey, cb }) {
+
+export function EachPlot({ name, exerciseStat }) {
+  const [curKey, setKey] = useState(yKeys[0]);
+
   const data = [
     {
       x: exerciseStat.map((d) => d.date),
       y: exerciseStat.map((d) => {
-        const val = d[yKey];
-        if (keysNeedingConversion.has(yKey) && d.weightUnit === "lbs") {
+        const val = d[curKey];
+        if (keysNeedingConversion.has(curKey) && d.weightUnit === "lbs") {
           return (val / LBS_PER_KG).toFixed(2);
         }
         return val.toFixed(2);
       }),
       type: "bar",
+      marker: { color: "crimson" },
       text: exerciseStat.map((d) =>
-        keysForDuration.has(yKey) ? d.eachRepDuration : d.eachRep
+        keysForDuration.has(curKey) ? d.eachRepDuration : d.eachRep
       ),
     },
   ];
   const layout = {
     title: name,
     xaxis: { title: "Date" },
-    yaxis: { title: yLabels[yKey] },
+    yaxis: { title: yLabels[curKey] },
     height: HEIGHT,
     width: WIDTH,
   };
   const config = { responsive: true };
-  setTimeout(() => {
-    // eslint-disable-next-line no-undef
-    Plotly.newPlot(divName, data, layout, config);
-    cb();
-  }, 1);
-}
-
-export function EachPlot({ name, exerciseStat }) {
-  const [loading, setLoading] = useState(true);
-  const [curKey, setKey] = useState(yKeys[0]);
-  useEffect(() => {
-    eachPlot({
-      divName: name,
-      exerciseStat,
-      name,
-      yKey: curKey,
-      cb: () => setLoading(false),
-    });
-  }, [exerciseStat, name, curKey]);
 
   const handleSelectChange = (event) => {
-    setLoading(true);
     setKey(event.target.value);
   };
 
   return (
-    <div className="plot-item">
-      <div key={name} id={name} />
-      {loading ? (
-        <Loader />
-      ) : (
-        <select value={curKey} onChange={handleSelectChange}>
-          {yKeys.map((k) => (
-            <option value={k} key={k}>
-              {btnLabels[k]}
-            </option>
-          ))}
-        </select>
-      )}
+    <div>
+      <select value={curKey} onChange={handleSelectChange}>
+        {yKeys.map((k) => (
+          <option value={k} key={k}>
+            {btnLabels[k]}
+          </option>
+        ))}
+      </select>
+      <Plot data={data} config={config} layout={layout} />
     </div>
   );
 }

@@ -1,14 +1,28 @@
+import { useState } from "preact/hooks";
 import { EachPlot } from "./EachPlot";
-import { Bookmarks } from "./Bookmarks";
 export function Plot({ data }) {
   const exerciseNames = Object.keys(data);
+  const [selectedName, setSelectedName] = useState(exerciseNames[0]);
+
   return (
-    <div>
-      <Bookmarks names={exerciseNames} />
-      <div className="plots">
+    <div className="plot-container">
+      <div className="bookmarks">
         {exerciseNames.map((name) => (
-          <EachPlot key={name} name={name} exerciseStat={data[name]} />
+          <a
+            className={selectedName === name ? "selected" : ""}
+            onClick={() => setSelectedName(name)}
+            key={name}
+          >
+            {name}
+          </a>
         ))}
+      </div>
+      <div className="plots">
+        <EachPlot
+          key={selectedName}
+          name={selectedName}
+          exerciseStat={data[selectedName]}
+        />
       </div>
     </div>
   );
