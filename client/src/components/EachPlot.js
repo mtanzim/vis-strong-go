@@ -1,5 +1,7 @@
 import { useState } from "preact/hooks";
-import Plot from "react-plotly.js";
+import Plotly from "plotly.js/dist/plotly.min";
+import createPlotlyComponent from "react-plotly.js/factory";
+const Plot = createPlotlyComponent(Plotly);
 
 const keysNeedingConversion = new Set([
   "totalWeight",

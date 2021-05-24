@@ -1,4 +1,6 @@
 const LS_KEY = "StrongData";
+// eslint-disable-next-line no-undef
+const BASE_API = __BASE_API__;
 
 export function removeCache() {
   window.localStorage.removeItem(LS_KEY);
@@ -19,12 +21,10 @@ export function cacheData(data) {
   window.localStorage.setItem(LS_KEY, JSON.stringify(data));
 }
 
-const BASE_API = "http://localhost:8081/";
-
 export async function uploadFile(file) {
   const formData = new FormData();
   formData.append("myFile", file, file?.name || "strong.csv");
-  const res = await fetch(BASE_API + "api/v1/upload", {
+  const res = await fetch(`${BASE_API}api/v1/upload`, {
     method: "POST",
     body: formData,
   });
