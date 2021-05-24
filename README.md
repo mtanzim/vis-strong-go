@@ -1,6 +1,6 @@
 # vis-strong-go
 
-Visualize [Strong](https://www.strong.app/) csv dumps.
+Visualize [Strong](https://www.strong.app/) csv exports.
 
 Try the app [here.](https://vis-strong-go-ghfzoy3ovq-ue.a.run.app/)
 
