@@ -78,10 +78,17 @@ code {
 
 .plots {
   display: flex;
-  border: 1px solid #dfdfdf;
   padding: 8px;
   min-height: 600px;
   min-width: 900px;
+}
+
+.fade-in {
+  opacity: 1;
+  animation-name: fadeIn;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in;
+  animation-duration: 0.25s;
 }
 
 .control-btn {
@@ -100,14 +107,6 @@ code {
   width: 36px;
   height: auto;
   margin: auto;
-}
-@keyframes rotating {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }
 
 @keyframes fadeIn {
