@@ -25,7 +25,7 @@ const btnLabels = {
 const LBS_PER_KG = 2.20462;
 
 const WIDTH = 900;
-const HEIGHT = 700;
+const HEIGHT = 600;
 
 const yKeys = [
   "totalReps",

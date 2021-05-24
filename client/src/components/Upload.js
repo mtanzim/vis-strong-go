@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { uploadFile, removeCache, getCache } from "../api/upload";
 import { useState, useEffect } from "preact/hooks";
 import { createRef } from "preact";
@@ -71,30 +72,48 @@ export function Upload() {
   }
 
   return (
-    <form
-      className="upload-form border-bottom"
-      onSubmit={submit}
-      enctype="multipart/form-data"
-    >
-      <label>
-        <p>
-          Welcome to Strong Dashboard. Upload your csv file exported from the
-          Strong app to visualize your data and get a sense of your progress.
-        </p>
-        <input
-          className="control-btn"
-          type="file"
-          accept=".csv"
-          name="myFile"
-          ref={fileInputRef}
-        />
-        <input
-          className="control-btn"
-          style={{ marginLeft: 8 }}
-          type="submit"
-          value="Upload File"
-        />
-      </label>
-    </form>
+    <div>
+      <p>
+        Welcome to Strong Dashboard. Upload your csv file exported from the
+        Strong app to visualize your data and get a sense of your progress.
+      </p>
+      <div>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href={__STRONG_URL__ || "#"}
+        >
+          <button className="control-btn">Strong App</button>
+        </a>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href={__STRONG_HELP__ || "#"}
+        >
+          <button className="control-btn">Exporting Strong data</button>
+        </a>
+      </div>
+      <form
+        className="upload-form border-bottom"
+        onSubmit={submit}
+        enctype="multipart/form-data"
+      >
+        <label>
+          <input
+            className="control-btn"
+            type="file"
+            accept=".csv"
+            name="myFile"
+            ref={fileInputRef}
+          />
+          <input
+            className="control-btn"
+            style={{ marginLeft: 8 }}
+            type="submit"
+            value="Upload File"
+          />
+        </label>
+      </form>
+    </div>
   );
 }
