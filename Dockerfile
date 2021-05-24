@@ -12,12 +12,11 @@ FROM golang:latest
 
 WORKDIR /go/src/app
 COPY --from=build /app/build public
-# COPY public public
 COPY go.mod .
 COPY go.sum .
 RUN go mod download
 COPY . .
-
+RUN rm -rf client
 
 EXPOSE 8080
 RUN go build -o rest-server main.go
