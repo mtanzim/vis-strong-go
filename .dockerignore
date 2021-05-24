@@ -1,0 +1,9 @@
+.env
+*.db
+public
+.github
+.vscode
+*/node_modules
+vis-strong-go
+.wakatime*
+.git

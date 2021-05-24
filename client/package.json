@@ -4,9 +4,9 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "build": "preact build && cp -r deps build/",
+    "build": "preact build --no-prerender",
     "serve": "sirv build --port 8080 --cors --single",
-    "dev": "preact watch",
+    "dev": "BASE_API=http://localhost:8081/ preact watch",
     "lint": "eslint src"
   },
   "eslintConfig": {
@@ -22,9 +22,7 @@
     "sirv-cli": "^1.0.3"
   },
   "dependencies": {
-    "plotly.js": "^1.58.4",
     "preact": "^10.1.0",
-    "preact-render-to-string": "^5.1.2",
-    "react-plotly.js": "^2.5.1"
+    "preact-render-to-string": "^5.1.2"
   }
 }

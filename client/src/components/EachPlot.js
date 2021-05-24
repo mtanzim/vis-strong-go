@@ -1,5 +1,4 @@
-import { useState } from "preact/hooks";
-import Plot from "react-plotly.js";
+import { useEffect, useState } from "preact/hooks";
 
 const keysNeedingConversion = new Set([
   "totalWeight",
@@ -39,31 +38,35 @@ const yKeys = [
 export function EachPlot({ name, exerciseStat }) {
   const [curKey, setKey] = useState(yKeys[0]);
 
-  const data = [
-    {
-      x: exerciseStat.map((d) => d.date),
-      y: exerciseStat.map((d) => {
-        const val = d[curKey];
-        if (keysNeedingConversion.has(curKey) && d.weightUnit === "lbs") {
-          return (val / LBS_PER_KG).toFixed(2);
-        }
-        return val.toFixed(2);
-      }),
-      type: "bar",
-      marker: { color: "crimson" },
-      text: exerciseStat.map((d) =>
-        keysForDuration.has(curKey) ? d.eachRepDuration : d.eachRep
-      ),
-    },
-  ];
-  const layout = {
-    title: name,
-    xaxis: { title: "Date" },
-    yaxis: { title: yLabels[curKey] },
-    height: HEIGHT,
-    width: WIDTH,
-  };
-  const config = { responsive: true };
+  useEffect(() => {
+    const data = [
+      {
+        x: exerciseStat.map((d) => d.date),
+        y: exerciseStat.map((d) => {
+          const val = d[curKey];
+          if (keysNeedingConversion.has(curKey) && d.weightUnit === "lbs") {
+            return (val / LBS_PER_KG).toFixed(2);
+          }
+          return val.toFixed(2);
+        }),
+        type: "bar",
+        marker: { color: "crimson" },
+        text: exerciseStat.map((d) =>
+          keysForDuration.has(curKey) ? d.eachRepDuration : d.eachRep
+        ),
+      },
+    ];
+    const layout = {
+      title: name,
+      xaxis: { title: "Date" },
+      yaxis: { title: yLabels[curKey] },
+      height: HEIGHT,
+      width: WIDTH,
+    };
+    const config = { responsive: true };
+    // eslint-disable-next-line no-undef
+    Plotly.newPlot(name, data, layout, config);
+  }, [name, exerciseStat, curKey]);
 
   const handleSelectChange = (event) => {
     setKey(event.target.value);
@@ -78,7 +81,7 @@ export function EachPlot({ name, exerciseStat }) {
           </option>
         ))}
       </select>
-      <Plot data={data} config={config} layout={layout} />
+      <div id={name} />
     </div>
   );
 }
