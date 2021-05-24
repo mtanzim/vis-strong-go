@@ -81,7 +81,7 @@ export function EachPlot({ name, exerciseStat }) {
           </option>
         ))}
       </select>
-      <div id={name} />
+      <div className="plots fade-in" id={name} />
     </div>
   );
 }

@@ -17,13 +17,11 @@ export function Plot({ data }) {
           </a>
         ))}
       </div>
-      <div className="plots">
-        <EachPlot
-          key={selectedName}
-          name={selectedName}
-          exerciseStat={data[selectedName]}
-        />
-      </div>
+      <EachPlot
+        key={selectedName}
+        name={selectedName}
+        exerciseStat={data[selectedName]}
+      />
     </div>
   );
 }
