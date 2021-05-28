@@ -3,6 +3,8 @@ package csvread
 import (
 	"bufio"
 	"encoding/csv"
+	"errors"
+	"io"
 	"mime/multipart"
 	"strconv"
 
@@ -23,52 +25,132 @@ type Row struct {
 	Seconds      int64
 }
 
-func GetDataFromCSV(file multipart.File) ([]Row, error) {
-	reader := csv.NewReader(bufio.NewReader(file))
-	reader.Comma = ';'
-	reader.LazyQuotes = true
+type CSVResult struct {
+	Lines           [][]string
+	HeaderPositions map[string]int
+}
 
+func checkDelims(file multipart.File, expectedDelim rune, expectedHeaders []string) (*CSVResult, error) {
+
+	file.Seek(0, io.SeekStart)
+	reader := csv.NewReader(bufio.NewReader(file))
+	reader.LazyQuotes = true
+	reader.Comma = expectedDelim
+	header, err := reader.Read()
+	if err != nil {
+		return nil, err
+	}
+	csvHeaderPositions := make(map[string]int)
+	for i, token := range header {
+		if token != "" {
+			csvHeaderPositions[token] = i
+		}
+	}
+	for _, expectedToken := range expectedHeaders {
+		if _, ok := csvHeaderPositions[expectedToken]; !ok {
+			return nil, errors.New("unable to parse csv")
+		}
+	}
 	lines, err := reader.ReadAll()
 	if err != nil {
 		return nil, err
 	}
+	return &CSVResult{Lines: lines, HeaderPositions: csvHeaderPositions}, nil
+
+}
+
+func GetDataFromCSV(file multipart.File) ([]Row, error) {
+
+	expectedHeaders := []string{
+		"Date",
+		"Workout Name",
+		"Exercise Name",
+		"Set Order",
+		"Weight",
+		"Reps",
+		"Distance",
+		"Seconds",
+	}
+
+	expectedDelims := []rune{';', ','}
+
+	var lines [][]string
+	var csvHeaderPositions map[string]int
+	for _, r := range expectedDelims {
+		res, err := checkDelims(file, r, expectedHeaders)
+		if err == nil {
+			lines = res.Lines
+			csvHeaderPositions = res.HeaderPositions
+			break
+		}
+	}
+
 	var rows []Row
-	for i, line := range lines {
-		// skip the header
-		if i == 0 {
-			continue
+	for _, line := range lines {
+
+		var setOrder int64
+		if setOrderPos, ok := csvHeaderPositions["Set Order"]; ok {
+			setOrder, _ = strconv.ParseInt(line[setOrderPos], 10, 64)
 		}
-		setOrder, err := strconv.ParseInt(line[3], 10, 64)
-		if err != nil {
-			setOrder = 0
+
+		var weight float64
+		if weightPos, ok := csvHeaderPositions["Weight"]; ok {
+			weight, _ = strconv.ParseFloat(line[weightPos], 64)
 		}
-		weight, err := strconv.ParseFloat(line[4], 64)
-		if err != nil {
-			weight = 0.0
+
+		var reps int64
+		if repsPosition, ok := csvHeaderPositions["Reps"]; ok {
+			reps, _ = strconv.ParseInt(line[repsPosition], 10, 64)
 		}
-		reps, err := strconv.ParseInt(line[6], 10, 64)
-		if err != nil {
-			reps = 0
+
+		var distance float64
+		if distancePos, ok := csvHeaderPositions["Distance"]; ok {
+			distance, _ = strconv.ParseFloat(line[distancePos], 64)
+
 		}
-		distance, err := strconv.ParseFloat(line[8], 64)
-		if err != nil {
-			distance = 0.0
+
+		var seconds int64
+		if secondsPos, ok := csvHeaderPositions["Seconds"]; ok {
+			seconds, _ = strconv.ParseInt(line[secondsPos], 10, 64)
+
 		}
-		seconds, err := strconv.ParseInt(line[10], 10, 64)
-		if err != nil {
-			distance = 0.0
+
+		var date string
+		if datePos, ok := csvHeaderPositions["Date"]; ok {
+			date = line[datePos]
 		}
-		date := line[0]
+
+		var workoutName string
+		if workoutNamePos, ok := csvHeaderPositions["Workout Name"]; ok {
+			workoutName = line[workoutNamePos]
+		}
+
+		var excName string
+		if excNamePos, ok := csvHeaderPositions["Exercise Name"]; ok {
+			excName = line[excNamePos]
+		}
+
+		// TODO: fix full stack treatment of default units
+		weightUnit := "lbs"
+		if weightUnitPos, ok := csvHeaderPositions["Weight Unit"]; ok {
+			weightUnit = line[weightUnitPos]
+		}
+
+		distanceUnit := "mi"
+		if distanceUnitPos, ok := csvHeaderPositions["Distance Unit"]; ok {
+			distanceUnit = line[distanceUnitPos]
+		}
+
 		row := Row{
 			Date:         date,
-			WorkoutName:  line[1],
-			ExerciseName: line[2],
+			WorkoutName:  workoutName,
+			ExerciseName: excName,
 			SetOrder:     setOrder,
 			Weight:       weight,
-			WeightUnit:   line[5],
+			WeightUnit:   weightUnit,
 			Reps:         reps,
 			Distance:     distance,
-			DistanceUnit: line[9],
+			DistanceUnit: distanceUnit,
 			Seconds:      seconds,
 		}
 		rows = append(rows, row)
