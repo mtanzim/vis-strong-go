@@ -1,3 +1,5 @@
+github.com/csimplestring/go-csv v0.0.0-20180328183906-5b8b3cd94f2c h1:GwqiOoo1VZspAInyjqfrtLlpyp4EHh7E22s0auYZ26g=
+github.com/csimplestring/go-csv v0.0.0-20180328183906-5b8b3cd94f2c/go.mod h1:1vw0DCCXA4OaVQgLu1qoz/SQuTgCBpvUxPFSbdcyx+k=
 github.com/joho/godotenv v1.3.0 h1:Zjp+RcGpHhGlrMbJzXTrZZPrWj+1vfm90La1wgB6Bhc=
 github.com/joho/godotenv v1.3.0/go.mod h1:7hK45KPybAkOC6peb+G5yklZfMxEjkZhHbwpqxOKXbg=
 github.com/mattn/go-sqlite3 v1.14.7 h1:fxWBnXkxfM6sRiuH3bqJ4CfzZojMOLVc0UTsTglEghA=
