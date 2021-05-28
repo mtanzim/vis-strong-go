@@ -7,7 +7,6 @@ import (
 	"mime/multipart"
 	"strconv"
 
-	"github.com/csimplestring/go-csv/detector"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -23,13 +22,6 @@ type Row struct {
 	Distance     float64
 	DistanceUnit string
 	Seconds      int64
-}
-
-func getDelimiter(file multipart.File) []string {
-	detector := detector.New()
-
-	delimiters := detector.DetectDelimiter(file, '"')
-	return delimiters
 }
 
 func GetDataFromCSV(file multipart.File) ([]Row, error) {
@@ -74,38 +66,69 @@ func GetDataFromCSV(file multipart.File) ([]Row, error) {
 	var rows []Row
 	for _, line := range lines {
 
-		setOrder, err := strconv.ParseInt(line[csvHeaderPositions["Set Order"]], 10, 64)
-		if err != nil {
-			setOrder = 0
+		var setOrder int64
+		if setOrderPos, ok := csvHeaderPositions["Set Order"]; ok {
+			setOrder, _ = strconv.ParseInt(line[setOrderPos], 10, 64)
 		}
-		weight, err := strconv.ParseFloat(line[csvHeaderPositions["Weight"]], 64)
-		if err != nil {
-			weight = 0.0
+
+		var weight float64
+		if weightPos, ok := csvHeaderPositions["Weight"]; ok {
+			weight, _ = strconv.ParseFloat(line[weightPos], 64)
 		}
-		reps, err := strconv.ParseInt(line[csvHeaderPositions["Reps"]], 10, 64)
-		if err != nil {
-			reps = 0
+
+		var reps int64
+		if repsPosition, ok := csvHeaderPositions["Reps"]; ok {
+			reps, _ = strconv.ParseInt(line[repsPosition], 10, 64)
 		}
-		distance, err := strconv.ParseFloat(line[csvHeaderPositions["Distance"]], 64)
-		if err != nil {
-			distance = 0.0
+
+		var distance float64
+		if distancePos, ok := csvHeaderPositions["Distance"]; ok {
+			distance, _ = strconv.ParseFloat(line[distancePos], 64)
+
 		}
-		seconds, err := strconv.ParseInt(line[csvHeaderPositions["Seconds"]], 10, 64)
-		if err != nil {
-			seconds = 0.0
+
+		var seconds int64
+		if secondsPos, ok := csvHeaderPositions["Seconds"]; ok {
+			seconds, _ = strconv.ParseInt(line[secondsPos], 10, 64)
+
 		}
-		date := line[csvHeaderPositions["Date"]]
+
+		var date string
+		if datePos, ok := csvHeaderPositions["Date"]; ok {
+			date = line[datePos]
+		}
+
+		var workoutName string
+		if workoutNamePos, ok := csvHeaderPositions["Workout Name"]; ok {
+			workoutName = line[workoutNamePos]
+		}
+
+		var excName string
+		if excNamePos, ok := csvHeaderPositions["Exercise Name"]; ok {
+			excName = line[excNamePos]
+		}
+
+		// TODO: fix full stack treatment of default units
+		weightUnit := "lbs"
+		if weightUnitPos, ok := csvHeaderPositions["Weight Unit"]; ok {
+			weightUnit = line[weightUnitPos]
+		}
+
+		distanceUnit := "mi"
+		if distanceUnitPos, ok := csvHeaderPositions["Distance Unit"]; ok {
+			distanceUnit = line[distanceUnitPos]
+		}
 
 		row := Row{
 			Date:         date,
-			WorkoutName:  line[csvHeaderPositions["Workout Name"]],
-			ExerciseName: line[csvHeaderPositions["Exercise Name"]],
+			WorkoutName:  workoutName,
+			ExerciseName: excName,
 			SetOrder:     setOrder,
 			Weight:       weight,
-			WeightUnit:   line[csvHeaderPositions["Weight Unit"]],
+			WeightUnit:   weightUnit,
 			Reps:         reps,
 			Distance:     distance,
-			DistanceUnit: line[csvHeaderPositions["Distance Unit"]],
+			DistanceUnit: distanceUnit,
 			Seconds:      seconds,
 		}
 		rows = append(rows, row)
