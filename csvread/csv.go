@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"encoding/csv"
 	"errors"
+	"io"
 	"mime/multipart"
 	"strconv"
 
@@ -24,12 +25,42 @@ type Row struct {
 	Seconds      int64
 }
 
-func GetDataFromCSV(file multipart.File) ([]Row, error) {
+type CSVResult struct {
+	Lines           [][]string
+	HeaderPositions map[string]int
+}
 
+func checkDelims(file multipart.File, expectedDelim rune, expectedHeaders []string) (*CSVResult, error) {
+
+	file.Seek(0, io.SeekStart)
 	reader := csv.NewReader(bufio.NewReader(file))
 	reader.LazyQuotes = true
-
+	reader.Comma = expectedDelim
+	header, err := reader.Read()
+	if err != nil {
+		return nil, err
+	}
 	csvHeaderPositions := make(map[string]int)
+	for i, token := range header {
+		if token != "" {
+			csvHeaderPositions[token] = i
+		}
+	}
+	for _, expectedToken := range expectedHeaders {
+		if _, ok := csvHeaderPositions[expectedToken]; !ok {
+			return nil, errors.New("unable to parse csv")
+		}
+	}
+	lines, err := reader.ReadAll()
+	if err != nil {
+		return nil, err
+	}
+	return &CSVResult{Lines: lines, HeaderPositions: csvHeaderPositions}, nil
+
+}
+
+func GetDataFromCSV(file multipart.File) ([]Row, error) {
+
 	expectedHeaders := []string{
 		"Date",
 		"Workout Name",
@@ -41,26 +72,17 @@ func GetDataFromCSV(file multipart.File) ([]Row, error) {
 		"Seconds",
 	}
 
-	reader.Comma = ','
-	header, err := reader.Read()
-	if err != nil {
-		return nil, err
-	}
-	for i, token := range header {
-		if token != "" {
-			csvHeaderPositions[token] = i
-		}
-	}
+	expectedDelims := []rune{';', ','}
 
-	for _, expectedToken := range expectedHeaders {
-		if _, ok := csvHeaderPositions[expectedToken]; !ok {
-			return nil, errors.New("unable to parse csv")
+	var lines [][]string
+	var csvHeaderPositions map[string]int
+	for _, r := range expectedDelims {
+		res, err := checkDelims(file, r, expectedHeaders)
+		if err == nil {
+			lines = res.Lines
+			csvHeaderPositions = res.HeaderPositions
+			break
 		}
-	}
-
-	lines, err := reader.ReadAll()
-	if err != nil {
-		return nil, err
 	}
 
 	var rows []Row
