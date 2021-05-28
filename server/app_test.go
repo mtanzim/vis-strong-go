@@ -145,11 +145,6 @@ func TestUploadInvalid(t *testing.T) {
 
 }
 
-type failRecord struct {
-	statusErr string
-	bodyErr   string
-}
-
 func TestUploadLoadTest(t *testing.T) {
 
 	handler := http.HandlerFunc(controllers.UploadController)
@@ -169,15 +164,20 @@ func TestUploadLoadTest(t *testing.T) {
 			filename:       "fixtures/exampleB.csv",
 			expectedSubStr: "Triceps Extension",
 		},
+		{
+			filename:       "fixtures/alt.csv",
+			expectedSubStr: "Phraks Wed",
+		},
 	}
 
 	numIterations := 500 * 10
-	fails := make(map[int]failRecord)
+
+	fails := make(map[int]bool)
 
 	for n := 0; n <= numIterations; n++ {
-		testname := fmt.Sprintf("%s,%d", "Loadtest", n)
 
-		curTest := alternatingTests[n%2]
+		curTest := alternatingTests[n%3]
+		testname := fmt.Sprintf("%s,%d, %s", "Loadtest", n, curTest.filename)
 
 		req, err := reqWithFile(curTest.filename, filetype, route)
 		t.Run(testname, func(t *testing.T) {
@@ -190,28 +190,20 @@ func TestUploadLoadTest(t *testing.T) {
 			handler.ServeHTTP(rr, req)
 			expectedStatus := http.StatusOK
 
-			fail := &failRecord{}
 			if status := rr.Code; status != int(expectedStatus) {
-				fail.statusErr = fmt.Sprintf("handler returned wrong status code: got %v want %v",
-					status, expectedStatus)
+				t.Errorf("handler returned wrong status code: got %v want %v;  fail ratio %f",
+					status, expectedStatus, float64(len(fails))/float64(numIterations))
+
 			}
 			expectedSubStr := curTest.expectedSubStr
 			resString := rr.Body.String()
 			containsExpected := strings.Contains(resString, expectedSubStr)
 			if !containsExpected {
-				fail.bodyErr = fmt.Sprintf("handler returned unexpected body: got %v wanted to have substring %v",
-					rr.Body.String(), expectedSubStr)
+				t.Errorf("handler returned unexpected body: got %v wanted to have substring %v; fail ratio %f",
+					rr.Body.String(), expectedSubStr, float64(len(fails))/float64(numIterations))
 			}
 
 		})
-	}
-
-	t.Log(fails)
-	acceptableFailRatio := 0.005
-	actualFailRatio := float64(len(fails)) / float64(numIterations)
-	if actualFailRatio > acceptableFailRatio {
-		t.Errorf("Fail percentatage over acceptable ratio, got %f wanted to have %f",
-			actualFailRatio, acceptableFailRatio)
 	}
 
 }
