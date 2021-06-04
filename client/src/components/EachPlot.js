@@ -1,5 +1,6 @@
 import { useEffect, useState } from "preact/hooks";
 
+// TODO: dynamic units ie: kg vs lbs
 const yLabels = {
   totalReps: "Total Reps",
   totalWeight: "Total Weight - kg",
