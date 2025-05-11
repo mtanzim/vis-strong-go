@@ -1,6 +1,5 @@
 const LS_KEY = "StrongData";
-// eslint-disable-next-line no-undef
-const BASE_API = __BASE_API__;
+const BASE_API = "http://localhost:8080/";
 
 export function removeCache() {
   window.localStorage.removeItem(LS_KEY);

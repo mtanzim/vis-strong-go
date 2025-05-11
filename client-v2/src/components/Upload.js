@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import { uploadFile, removeCache, getCache } from "../api/upload";
 import { useState, useEffect } from "preact/hooks";
 import { createRef } from "preact";
@@ -81,14 +80,14 @@ export function Upload() {
         <a
           target="_blank"
           rel="noopener noreferrer"
-          href={__STRONG_URL__ || "#"}
+          href="#"
         >
           <button className="control-btn">Strong App</button>
         </a>
         <a
           target="_blank"
           rel="noopener noreferrer"
-          href={__STRONG_HELP__ || "#"}
+          href="#"
         >
           <button className="control-btn">Exporting Strong data</button>
         </a>
