@@ -62,14 +62,19 @@ func checkDelims(file multipart.File, expectedDelim rune, expectedHeaders []stri
 func GetDataFromCSV(file multipart.File) ([]Row, error) {
 
 	expectedHeaders := []string{
+		"Workout #",
 		"Date",
 		"Workout Name",
+		"Duration (sec)",
 		"Exercise Name",
 		"Set Order",
-		"Weight",
+		"Weight (kg)",
 		"Reps",
-		"Distance",
+		"RPE",
+		"Distance (meters)",
 		"Seconds",
+		"Notes",
+		"Workout Notes",
 	}
 
 	expectedDelims := []rune{';', ','}
@@ -94,7 +99,7 @@ func GetDataFromCSV(file multipart.File) ([]Row, error) {
 		}
 
 		var weight float64
-		if weightPos, ok := csvHeaderPositions["Weight"]; ok {
+		if weightPos, ok := csvHeaderPositions["Weight (kg)"]; ok {
 			weight, _ = strconv.ParseFloat(line[weightPos], 64)
 		}
 
@@ -104,7 +109,7 @@ func GetDataFromCSV(file multipart.File) ([]Row, error) {
 		}
 
 		var distance float64
-		if distancePos, ok := csvHeaderPositions["Distance"]; ok {
+		if distancePos, ok := csvHeaderPositions["Distance (meters)"]; ok {
 			distance, _ = strconv.ParseFloat(line[distancePos], 64)
 
 		}
@@ -130,16 +135,8 @@ func GetDataFromCSV(file multipart.File) ([]Row, error) {
 			excName = line[excNamePos]
 		}
 
-		// TODO: fix full stack treatment of default units
-		weightUnit := "lbs"
-		if weightUnitPos, ok := csvHeaderPositions["Weight Unit"]; ok {
-			weightUnit = line[weightUnitPos]
-		}
-
-		distanceUnit := "mi"
-		if distanceUnitPos, ok := csvHeaderPositions["Distance Unit"]; ok {
-			distanceUnit = line[distanceUnitPos]
-		}
+		weightUnit := "kg"
+		distanceUnit := "meters"
 
 		row := Row{
 			Date:         date,
