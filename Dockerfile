@@ -3,7 +3,8 @@ FROM node:22-slim AS build
 WORKDIR /app
 
 COPY ./client-v2/package.json package.json
-RUN npm install
+COPY ./client-v2/package-lock.json package-lock.json
+RUN npm ci
 COPY client-v2 .
 
 RUN npm run build
@@ -16,7 +17,7 @@ COPY go.mod .
 COPY go.sum .
 RUN go mod download
 COPY . .
-RUN rm -rf client
+RUN rm -rf client-v2
 
 EXPOSE 8080
 RUN go build -o rest-server main.go
