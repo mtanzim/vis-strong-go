@@ -1,33 +1,15 @@
-Date;Workout Name;Exercise Name;Set Order;Weight;Weight Unit;Reps;RPE;Distance;Distance Unit;Seconds;Notes;Workout Notes
-2019-01-11 12:31:54;"Leg";"Deadlift (Barbell)";1;20;kg;5;;;;0;"";""
-2019-01-11 12:31:54;"Leg";"Deadlift (Barbell)";2;20;kg;4;;;;0;;
-2019-01-11 12:31:54;"Leg";"Deadlift (Barbell)";3;20;kg;6;;;;0;;
-2019-01-11 12:31:54;"Leg";"Leg Press";1;18.14;kg;8;;;;0;"";
-2019-01-11 12:31:54;"Leg";"Leg Press";2;18.14;kg;8;;;;0;;
-2019-01-11 12:31:54;"Leg";"Leg Press";3;18.14;kg;8;;;;0;;
-2019-01-11 12:31:54;"Leg";"Seated Leg Curl (Machine)";1;32;kg;12;;;;0;"";
-2019-01-11 12:31:54;"Leg";"Seated Leg Curl (Machine)";2;32;kg;12;;;;0;;
-2019-01-11 12:31:54;"Leg";"Seated Calf Raise (Machine)";1;20;kg;15;;;;0;"";
-2019-01-11 12:31:54;"Leg";"Seated Calf Raise (Machine)";2;30;kg;12;;;;0;;
-2019-01-11 12:31:54;"Leg";"Seated Calf Raise (Machine)";3;30;kg;8;;;;0;;
-2019-01-11 12:31:54;"Leg";"Seated Calf Raise (Machine)";4;30;kg;5;;;;0;;
-2019-01-11 12:31:54;"Leg";"Plank";1;;;;;;mi.;60;"";
-2019-01-11 12:31:54;"Leg";"Plank";2;;;;;;mi.;60;;
-2019-01-11 12:31:54;"Leg";"Plank";3;;;;;;mi.;60;;
-2019-01-13 07:55:13;"Back, Core, Biceps";"Lat Pulldown (Cable)";1;39;kg;6;;;;0;"";""
-2019-01-13 07:55:13;"Back, Core, Biceps";"Lat Pulldown (Cable)";2;39;kg;5;;;;0;;
-2019-01-13 07:55:13;"Back, Core, Biceps";"Lat Pulldown (Cable)";3;39;kg;8;;;;0;;
-2019-01-13 07:55:13;"Back, Core, Biceps";"Pull Up";1;0;kg;1;;;;0;"";
-2019-01-13 07:55:13;"Back, Core, Biceps";"Pull Up";2;0;kg;2;;;;0;;
-2019-01-13 07:55:13;"Back, Core, Biceps";"Pull Up";3;0;kg;2;;;;0;;
-2019-01-13 07:55:13;"Back, Core, Biceps";"Knee Raise (Captain's Chair)";1;0;kg;20;;;;0;"";
-2019-01-13 07:55:13;"Back, Core, Biceps";"Knee Raise (Captain's Chair)";2;0;kg;25;;;;0;;
-2019-01-13 07:55:13;"Back, Core, Biceps";"Knee Raise (Captain's Chair)";3;0;kg;25;;;;0;;
-2019-01-13 07:55:13;"Back, Core, Biceps";"Hammer Curl (Dumbbell)";1;7.5;kg;16;;;;0;"";
-2019-01-13 07:55:13;"Back, Core, Biceps";"Hammer Curl (Dumbbell)";2;10;kg;16;;;;0;;
-2019-01-13 07:55:13;"Back, Core, Biceps";"Hammer Curl (Dumbbell)";3;10;kg;16;;;;0;;
-2019-01-13 07:55:13;"Back, Core, Biceps";"Hammer Curl (Dumbbell)";4;10;kg;16;;;;0;;
-2019-01-13 07:55:13;"Back, Core, Biceps";"Seated Row (Machine)";1;32;kg;15;;;;0;"";
-2019-01-13 07:55:13;"Back, Core, Biceps";"Seated Row (Machine)";2;39;kg;6;;;;0;;
-2019-01-13 07:55:13;"Back, Core, Biceps";"Seated Row (Machine)";3;39;kg;5;;;;0;;
-2019-01-13 07:55:13;"Back, Core, Biceps";"Seated Row (Machine)";4;39;kg;5;;;;0;;
+"Workout #";"Date";"Workout Name";"Duration (sec)";"Exercise Name";"Set Order";"Weight (kg)";"Reps";"RPE";"Distance (meters)";"Seconds";"Notes";"Workout Notes"
+"39";"2019-03-28 15:24:28";"Shoulder";"1267";"Shoulder Press (Machine)";"2";"40.0";"8";"";"";"";"";""
+"39";"2019-03-28 15:24:28";"Shoulder";"1267";"Shoulder Press (Machine)";"3";"45.0";"5";"";"";"";"";""
+"39";"2019-03-28 15:24:28";"Shoulder";"1267";"Shoulder Press (Machine)";"4";"45.0";"3";"";"";"";"";""
+"39";"2019-03-28 15:24:28";"Shoulder";"1267";"Shoulder Press (Machine)";"5";"45.0";"4";"";"";"";"";""
+"40";"2019-03-31 05:42:20";"Leg";"4422";"Deadlift (Barbell)";"1";"40.0";"15";"";"";"";"";""
+"40";"2019-03-31 05:42:20";"Leg";"4422";"Deadlift (Barbell)";"2";"60.0";"4";"";"";"";"";""
+"40";"2019-03-31 05:42:20";"Leg";"4422";"Deadlift (Barbell)";"3";"70.0";"5";"";"";"";"";""
+"40";"2019-03-31 05:42:20";"Leg";"4422";"Deadlift (Barbell)";"4";"70.0";"3";"";"";"";"";""
+"40";"2019-03-31 05:42:20";"Leg";"4422";"Deadlift (Barbell)";"5";"70.0";"3";"";"";"";"";""
+"40";"2019-03-31 05:42:20";"Leg";"4422";"Leg Press";"1";"100.0";"15";"";"";"";"";""
+"40";"2019-03-31 05:42:20";"Leg";"4422";"Leg Press";"2";"120.0";"12";"";"";"";"";""
+"40";"2019-03-31 05:42:20";"Leg";"4422";"Leg Press";"3";"150.0";"8";"";"";"";"";""
+"40";"2019-03-31 05:42:20";"Leg";"4422";"Leg Press";"4";"150.0";"12";"";"";"";"";""
+"40";"2019-03-31 05:42:20";"Leg";"4422";"Leg Press";"5";"170.0";"12";"";"";"";"";""

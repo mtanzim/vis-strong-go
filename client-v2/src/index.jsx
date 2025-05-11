@@ -1,7 +1,9 @@
-import { Upload } from "./components/Upload";
-import "./style";
+import { render } from "preact";
 
-export default function App() {
+import "./style.css";
+import { Upload } from "./components/Upload";
+
+export function App() {
   return (
     <div className="content">
       <h1 className="title" id="title">
@@ -11,3 +13,5 @@ export default function App() {
     </div>
   );
 }
+
+render(<App />, document.getElementById("app"));
