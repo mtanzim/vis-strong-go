@@ -75,7 +75,6 @@ Temporary Items
 vis-strong-go
 __debug_bin
 .env
-public/
 csvread/csv.go
 main
 __debug_bin*
