@@ -1,6 +1,5 @@
 import { render } from "preact";
 
-import preactLogo from "./assets/preact.svg";
 import "./style.css";
 import { Upload } from "./components/Upload";
 

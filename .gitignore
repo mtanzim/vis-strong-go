@@ -78,3 +78,4 @@ __debug_bin
 public/
 csvread/csv.go
 main
+__debug_bin*

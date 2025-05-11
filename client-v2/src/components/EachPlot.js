@@ -17,8 +17,6 @@ const btnLabels = {
   totalSeconds: "Total Duration",
   totalDistance: "Total Distance",
 };
-const LBS_PER_KG = 2.20462;
-const MI_PER_KM = 0.621371;
 
 const WIDTH = 900;
 const HEIGHT = 600;
@@ -45,15 +43,7 @@ export function EachPlot({ name, exerciseStat }) {
             case "totalWeight":
             case "minWeight":
             case "maxWeight":
-              if (d.weightUnit === "lbs") {
-                return (val / LBS_PER_KG).toFixed(2);
-              }
-              return val.toFixed(2);
             case "totalDistance":
-              if (d.distanceUnit === "mi") {
-                console.log("converting distance");
-                return (val / MI_PER_KM).toFixed(2);
-              }
               return val.toFixed(2);
             default:
               return val.toFixed(2);

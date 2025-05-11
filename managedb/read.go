@@ -22,7 +22,7 @@ type ExerciseName struct {
 	ExerciseName string `json:"exerciseName"`
 }
 
-// const lbsPerKg = 2.20462
+const lbsPerKg = 2.20462
 
 func (userDB UserDB) ReadExerciseNames() ([]ExerciseName, error) {
 	db := userDB.DB
@@ -56,19 +56,17 @@ func (userDB UserDB) ReadExerciseNames() ([]ExerciseName, error) {
 
 func (userDB UserDB) ReadExerciseStats(excName string) ([]ExerciseStats, error) {
 	db := userDB.DB
-	// TODO: does not work if
-	// user switches measurement units within a date
 	sqlStmt := `
 		SELECT 
 		id, 
 		date, 
 		workoutName,
 		exerciseName,
-		MIN(weight) as minWeight, 
-		MAX(weight) as maxWeight,
+		round(MIN(weight),2) as minWeight, 
+		round(MAX(weight),2) as maxWeight,
 		COUNT(weight) as numSets,
 		SUM(reps) as totalReps, 
-		GROUP_CONCAT(weight || weightUnit || " x " || reps, ", ") as eachRep, 
+		GROUP_CONCAT(round(weight,2) || weightUnit || " x " || reps, ", ") as eachRep, 
 		SUM(weight*reps) as totalWeight, 
 		weightUnit,
 		SUM(distance) as totalDistance,
