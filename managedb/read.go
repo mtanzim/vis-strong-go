@@ -67,14 +67,15 @@ func (userDB UserDB) ReadExerciseStats(excName string) ([]ExerciseStats, error) 
 		COUNT(weight) as numSets,
 		SUM(reps) as totalReps, 
 		GROUP_CONCAT(round(weight,2) || weightUnit || " x " || reps, ", ") as eachRep, 
-		SUM(weight*reps) as totalWeight, 
+		round(SUM(weight*reps),2) as totalWeight, 
 		weightUnit,
-		SUM(distance) as totalDistance,
+		round(SUM(distance),2) as totalDistance,
 		distanceUnit,
 		SUM(seconds) as totalSeconds,
 		GROUP_CONCAT(seconds || "s", ", ") as eachRepDuration
 		from strong
 		WHERE exerciseName LIKE ?
+		AND date >= DATE('now', '-24 month')
 		GROUP BY date, exerciseName
 		ORDER BY exerciseName DESC
 		LIMIT 100000;
