@@ -1,15 +1,15 @@
-Date;Workout Name;Exercise Name;Set Order;Weight;Weight Unit;Reps;RPE;Distance;Distance Unit;Seconds;Notes;Workout Notes
-2019-01-14 14:48:05;"Chest and Triceps";"Bench Press (Dumbbell)";1;12.5;kg;15;;;;0;"";""
-2019-01-14 14:48:05;"Chest and Triceps";"Bench Press (Dumbbell)";2;20;kg;5;;;;0;;
-2019-01-14 14:48:05;"Chest and Triceps";"Bench Press (Dumbbell)";3;20;kg;6;;;;0;;
-2019-01-14 14:48:05;"Chest and Triceps";"Bench Press (Dumbbell)";4;20;kg;6;;;;0;;
-2019-01-14 14:48:05;"Chest and Triceps";"Chest Fly";1;25;kg;15;;;;0;"";
-2019-01-14 14:48:05;"Chest and Triceps";"Chest Fly";2;45;kg;12;;;;0;;
-2019-01-14 14:48:05;"Chest and Triceps";"Chest Fly";3;52;kg;6;;;;0;;
-2019-01-14 14:48:05;"Chest and Triceps";"Chest Fly";4;52;kg;4;;;;0;;
-2019-01-14 14:48:05;"Chest and Triceps";"Triceps Extension";1;9;kg;8;;;;0;"";
-2019-01-14 14:48:05;"Chest and Triceps";"Triceps Extension";2;14;kg;15;;;;0;;
-2019-01-14 14:48:05;"Chest and Triceps";"Triceps Extension";3;18;kg;8;;;;0;;
-2019-01-14 14:48:05;"Chest and Triceps";"Triceps Extension";4;18;kg;6;;;;0;;
-2019-01-14 14:48:05;"Chest and Triceps";"Triceps Extension";5;18;kg;6;;;;0;;
-2019-01-15 14:46:12;"Shoulder";"Overhead Press (Barbell)";1;7.5;kg;15;;;;0;"";""
+"Workout #";"Date";"Workout Name";"Duration (sec)";"Exercise Name";"Set Order";"Weight (kg)";"Reps";"RPE";"Distance (meters)";"Seconds";"Notes";"Workout Notes"
+"138";"2019-11-07 14:24:31";"Back, Core, Biceps";"2227";"Bicep Curl (Cable)";"4";"19.0";"4";"";"";"";"";""
+"138";"2019-11-07 14:24:31";"Back, Core, Biceps";"2227";"Knee Raise (Captain's Chair)";"1";"0.0";"30";"";"";"";"";""
+"138";"2019-11-07 14:24:31";"Back, Core, Biceps";"2227";"Knee Raise (Captain's Chair)";"2";"0.0";"30";"";"";"";"";""
+"138";"2019-11-07 14:24:31";"Back, Core, Biceps";"2227";"Knee Raise (Captain's Chair)";"3";"0.0";"30";"";"";"";"";""
+"139";"2019-11-09 10:46:24";"Leg";"4186";"Deadlift (Barbell)";"1";"40.0";"12";"";"";"";"";""
+"139";"2019-11-09 10:46:24";"Leg";"4186";"Deadlift (Barbell)";"2";"60.0";"4";"";"";"";"";""
+"139";"2019-11-09 10:46:24";"Leg";"4186";"Deadlift (Barbell)";"3";"60.0";"3";"";"";"";"";""
+"139";"2019-11-09 10:46:24";"Leg";"4186";"Deadlift (Barbell)";"4";"60.0";"5";"";"";"";"";""
+"139";"2019-11-09 10:46:24";"Leg";"4186";"Leg Press";"1";"80.0";"15";"";"";"";"";""
+"139";"2019-11-09 10:46:24";"Leg";"4186";"Leg Press";"2";"80.0";"15";"";"";"";"";""
+"139";"2019-11-09 10:46:24";"Leg";"4186";"Leg Press";"3";"80.0";"15";"";"";"";"";""
+"139";"2019-11-09 10:46:24";"Leg";"4186";"Plank";"1";"";"";"";"";"75.0";"";""
+"139";"2019-11-09 10:46:24";"Leg";"4186";"Plank";"2";"";"";"";"";"80.0";"";""
+"139";"2019-11-09 10:46:24";"Leg";"4186";"Plank";"3";"";"";"";"";"60.0";"";""
