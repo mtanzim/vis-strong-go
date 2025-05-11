@@ -7,13 +7,13 @@ const yLabels = {
   minWeight: "Min Weight - kg",
   maxWeight: "Max Weight - kg",
   totalSeconds: "Total Duration - s",
-  totalDistance: "Total Distance - km",
+  totalDistance: "Total Distance - m",
 };
 const btnLabels = {
-  totalReps: "Total Reps",
-  totalWeight: "Total Weight",
-  minWeight: "Min Weight",
   maxWeight: "Max Weight",
+  minWeight: "Min Weight",
+  totalWeight: "Total Weight",
+  totalReps: "Total Reps",
   totalSeconds: "Total Duration",
   totalDistance: "Total Distance",
 };
@@ -22,10 +22,10 @@ const WIDTH = 900;
 const HEIGHT = 600;
 
 const yKeys = [
-  "totalReps",
-  "totalWeight",
-  "minWeight",
   "maxWeight",
+  "minWeight",
+  "totalWeight",
+  "totalReps",
   "totalSeconds",
   "totalDistance",
 ];

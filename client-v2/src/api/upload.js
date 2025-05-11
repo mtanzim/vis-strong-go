@@ -1,5 +1,5 @@
 const LS_KEY = "StrongData";
-const BASE_API = "http://localhost:8080/";
+const BASE_API = import.meta.env.BASE_URL ?? "/"
 
 export function removeCache() {
   window.localStorage.removeItem(LS_KEY);

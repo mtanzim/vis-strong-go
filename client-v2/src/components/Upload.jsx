@@ -80,14 +80,14 @@ export function Upload() {
         <a
           target="_blank"
           rel="noopener noreferrer"
-          href="#"
+          href="https://www.strong.app/"
         >
           <button className="control-btn">Strong App</button>
         </a>
         <a
           target="_blank"
           rel="noopener noreferrer"
-          href="#"
+          href="https://help.strongapp.io/article/235-export-workout-data"
         >
           <button className="control-btn">Exporting Strong data</button>
         </a>
